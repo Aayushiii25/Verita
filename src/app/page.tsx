@@ -130,7 +130,7 @@ export default function HomePage() {
                 }}
                 className="relative overflow-x-clip will-change-transform will-change-opacity"
             >
-                <HeroVisual isExiting={isReadyToAnimate} />
+                <HeroVisual isReady={isReadyToAnimate} />
 
                 <DeferredMount>
                     <ExpertiseSection />

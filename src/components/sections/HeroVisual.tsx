@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import gsap from "gsap";
 import { Spotlight } from "@/components/ui/spotlight-new";
 
-export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
+export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const questionRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
-    if (isExiting) return;
+    if (!isReady) return;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
@@ -39,7 +39,7 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
       if (titleEl) {
         titleEl.textContent = "";
         let i = 0;
-        const speed = 100; // ms per character
+        const speed = 90; // ms per character
         
         function typeWriter() {
           if (i < text.length && titleEl) {
@@ -64,8 +64,8 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
           }
         }
         
-        // Start typing after a tiny delay (waiting for question to fade in)
-        startTimerId = setTimeout(typeWriter, 1500);
+        // Start typing after a tiny delay
+        startTimerId = setTimeout(typeWriter, 400);
 
         // Blinking cursor using border-right
         gsap.fromTo(titleEl, 
@@ -88,7 +88,7 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
     });
 
     return () => ctx.revert();
-  }, [isExiting]);
+  }, [isReady]);
 
   return (
     <motion.div
