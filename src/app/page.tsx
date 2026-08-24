@@ -128,7 +128,7 @@ export default function HomePage() {
                     ease: skipAnimation ? "linear" : [0.16, 1, 0.3, 1], // Expo out for snappy yet smooth feel
                     opacity: { duration: skipAnimation ? 0 : 0.8 }
                 }}
-                className="relative overflow-x-clip will-change-transform will-change-opacity"
+                className="relative overflow-x-clip"
             >
                 <HeroVisual isReady={isReadyToAnimate} />
 
