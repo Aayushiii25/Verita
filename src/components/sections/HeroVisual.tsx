@@ -30,21 +30,18 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
         delay: 0.2
       });
 
-      // Typewriter for VERITA (Width expansion effect)
+      // Typewriter for VERITA (Text replacement is robust for variable fonts)
+      const text = "VERITA";
       const titleEl = titleRef.current;
       if (titleEl) {
-        // Measure natural width (element mounts without restricted width)
-        const targetWidth = titleEl.offsetWidth;
+        titleEl.textContent = "";
         
-        // Animate from 0 to targetWidth
-        tl.fromTo(titleEl,
-          { width: 0 },
-          {
-            width: targetWidth,
-            duration: 1.2,
-            ease: "steps(6)"
-          }
-        );
+        // Typing animation
+        text.split("").forEach((char) => {
+          tl.add(() => {
+            titleEl.textContent += char;
+          }, `+=${0.1}`); // Faster typing (0.1s per character)
+        });
 
         // Blinking cursor using border-right
         gsap.fromTo(titleEl, 
@@ -53,26 +50,26 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
             borderRightColor: "currentColor",
             repeat: -1,
             yoyo: true,
-            duration: 0.4,
+            duration: 0.3,
             ease: "steps(1)"
           }
         );
       }
 
-      // Fade out cursor gracefully after typing finishes (optional)
+      // Fade out cursor gracefully after typing finishes
       tl.to(titleEl, {
         borderRightColor: "transparent",
-        duration: 0.3,
-        delay: 0.6
+        duration: 0.2,
+        delay: 0.2
       });
 
       // Fade in subtitle
       tl.to(subtitleRef.current, {
         opacity: 1,
         y: 0,
-        duration: 1.5,
+        duration: 1.2,
         ease: "power2.out"
-      }, "-=0.2");
+      }, "-=0.1");
       
     });
 
