@@ -136,12 +136,12 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-40 dark:opacity-20"
+          className="absolute inset-0 w-full h-full object-cover opacity-80 dark:opacity-60"
         >
           <source src="/size.mp4" type="video/mp4" />
           <track kind="captions" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/50 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/10 to-background" />
       </div>
 
       {/* Background Pattern */}
