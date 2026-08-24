@@ -30,18 +30,39 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
         delay: 0.2
       });
 
-      // Typewriter for VERITA (Text replacement is robust for variable fonts)
+      // Typewriter for VERITA (Native JS setTimeout)
       const text = "VERITA";
       const titleEl = titleRef.current;
       if (titleEl) {
         titleEl.textContent = "";
+        let i = 0;
+        const speed = 100; // ms per character
         
-        // Typing animation
-        text.split("").forEach((char) => {
-          tl.add(() => {
-            titleEl.textContent += char;
-          }, `+=${0.1}`); // Faster typing (0.1s per character)
-        });
+        function typeWriter() {
+          if (i < text.length && titleEl) {
+            titleEl.textContent += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, speed);
+          } else {
+            // Finished typing!
+            // Fade out cursor gracefully
+            gsap.to(titleEl, {
+              borderRightColor: "transparent",
+              duration: 0.2,
+              delay: 0.2
+            });
+            // Fade in subtitle
+            gsap.to(subtitleRef.current, {
+              opacity: 1,
+              y: 0,
+              duration: 1.2,
+              ease: "power2.out"
+            });
+          }
+        }
+        
+        // Start typing after a tiny delay (waiting for question to fade in)
+        setTimeout(typeWriter, 1500);
 
         // Blinking cursor using border-right
         gsap.fromTo(titleEl, 
@@ -55,21 +76,6 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
           }
         );
       }
-
-      // Fade out cursor gracefully after typing finishes
-      tl.to(titleEl, {
-        borderRightColor: "transparent",
-        duration: 0.2,
-        delay: 0.2
-      });
-
-      // Fade in subtitle
-      tl.to(subtitleRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        ease: "power2.out"
-      }, "-=0.1");
       
     });
 
