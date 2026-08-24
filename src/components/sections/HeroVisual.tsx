@@ -7,7 +7,6 @@ import { Spotlight } from "@/components/ui/spotlight-new";
 
 export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const cursorRef = useRef<HTMLSpanElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const questionRef = useRef<HTMLParagraphElement>(null);
 
@@ -31,31 +30,33 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
         delay: 0.2
       });
 
-      // Cursor blinking animation
-      gsap.to(cursorRef.current, {
-        opacity: 0,
-        repeat: -1,
-        yoyo: true,
-        duration: 0.4,
-        ease: "steps(1)"
-      });
-
-      // Typewriter for VERITA
-      const text = "VERITA";
+      // Typewriter for VERITA (Width expansion effect)
       const titleEl = titleRef.current;
       if (titleEl) {
-        titleEl.textContent = "";
+        // Measure the natural width of the text first
+        gsap.set(titleEl, { width: "auto" });
+        const targetWidth = titleEl.offsetWidth;
+        gsap.set(titleEl, { width: 0 });
         
-        text.split("").forEach((char) => {
-          tl.add(() => {
-            titleEl.textContent += char;
-          }, `+=${0.15}`); // Sequential stepped reveal
+        tl.to(titleEl, {
+          width: targetWidth,
+          duration: 1.2,
+          ease: "steps(6)"
+        });
+
+        // Blinking cursor using border-right
+        gsap.to(titleEl, {
+          borderRightColor: "transparent",
+          repeat: -1,
+          yoyo: true,
+          duration: 0.4,
+          ease: "steps(1)"
         });
       }
 
-      // Fade out cursor gracefully after typing finishes
-      tl.to(cursorRef.current, {
-        opacity: 0,
+      // Fade out cursor gracefully after typing finishes (optional, can just leave blinking)
+      tl.to(titleEl, {
+        borderRightColor: "transparent",
         duration: 0.3,
         delay: 0.6
       });
@@ -116,7 +117,7 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
         {/* Top Question */}
         <p
           ref={questionRef}
-          className="text-xs md:text-sm font-medium tracking-[0.2em] uppercase text-muted-foreground mb-12 md:mb-20"
+          className="text-sm md:text-base font-medium tracking-[0.2em] uppercase text-muted-foreground mb-12 md:mb-20"
         >
           WHEN DID YOU LAST VERIFY THE NUMBERS?
         </p>
@@ -125,22 +126,17 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
         <div className="flex items-center justify-center mb-8 md:mb-12 h-[clamp(4rem,15vw,14rem)] overflow-visible">
           <h1
             ref={titleRef}
-            className="text-[clamp(4rem,15vw,14rem)] font-medium tracking-[-0.04em] leading-[0.9] text-foreground uppercase whitespace-nowrap"
-            style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif", fontWeight: 500 }}
+            className="text-[clamp(4rem,15vw,14rem)] font-medium tracking-[-0.04em] leading-[0.9] text-foreground uppercase whitespace-nowrap overflow-hidden border-r-[4px] border-foreground pr-2"
+            style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif", fontWeight: 500, width: 0 }}
           >
-            {/* GSAP will populate text here */}
+            VERITA
           </h1>
-          <span
-            ref={cursorRef}
-            className="w-[3px] md:w-[6px] h-[80%] bg-foreground ml-2 md:ml-4 inline-block"
-            style={{ transform: 'translateY(-5%)' }}
-          />
         </div>
 
         {/* Subtitle */}
         <p
           ref={subtitleRef}
-          className="text-sm md:text-lg lg:text-xl text-muted-foreground tracking-wide font-light"
+          className="text-lg md:text-xl lg:text-2xl text-muted-foreground tracking-wide font-light"
         >
           Every number, verified.
         </p>
