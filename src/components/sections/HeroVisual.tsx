@@ -33,28 +33,33 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
       // Typewriter for VERITA (Width expansion effect)
       const titleEl = titleRef.current;
       if (titleEl) {
-        // Measure the natural width of the text first
-        gsap.set(titleEl, { width: "auto" });
+        // Measure natural width (element mounts without restricted width)
         const targetWidth = titleEl.offsetWidth;
-        gsap.set(titleEl, { width: 0 });
         
-        tl.to(titleEl, {
-          width: targetWidth,
-          duration: 1.2,
-          ease: "steps(6)"
-        });
+        // Animate from 0 to targetWidth
+        tl.fromTo(titleEl,
+          { width: 0 },
+          {
+            width: targetWidth,
+            duration: 1.2,
+            ease: "steps(6)"
+          }
+        );
 
         // Blinking cursor using border-right
-        gsap.to(titleEl, {
-          borderRightColor: "transparent",
-          repeat: -1,
-          yoyo: true,
-          duration: 0.4,
-          ease: "steps(1)"
-        });
+        gsap.fromTo(titleEl, 
+          { borderRightColor: "transparent" },
+          {
+            borderRightColor: "currentColor",
+            repeat: -1,
+            yoyo: true,
+            duration: 0.4,
+            ease: "steps(1)"
+          }
+        );
       }
 
-      // Fade out cursor gracefully after typing finishes (optional, can just leave blinking)
+      // Fade out cursor gracefully after typing finishes (optional)
       tl.to(titleEl, {
         borderRightColor: "transparent",
         duration: 0.3,
@@ -127,7 +132,7 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
           <h1
             ref={titleRef}
             className="text-[clamp(4rem,15vw,14rem)] font-medium tracking-[-0.04em] leading-[0.9] text-foreground uppercase whitespace-nowrap overflow-hidden border-r-[4px] border-foreground pr-2"
-            style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif", fontWeight: 500, width: 0 }}
+            style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif", fontWeight: 500, boxSizing: "content-box" }}
           >
             VERITA
           </h1>
