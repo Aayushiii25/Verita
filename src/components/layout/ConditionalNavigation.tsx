@@ -19,8 +19,9 @@ export function ConditionalNavigation({ children }: { children: React.ReactNode 
     const blogIndex = segments.indexOf('blog');
     const isBlogDetail = blogIndex !== -1 && segments.length > blogIndex + 1;
 
-    const isRoot = pathname === '/';
-    const useFullLayout = !(isProjectDetail || isBlogDetail || isRoot);
+    // Default to true for SSR to match the most common initial state,
+    // but only actually render the conditional logic once mounted to avoid mismatches.
+    const useFullLayout = !(isProjectDetail || isBlogDetail);
 
     if (!mounted) {
         return <>{children}</>;
