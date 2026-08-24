@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
@@ -127,6 +129,21 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
       animate={{ opacity: 1 }}
       className="relative min-h-screen w-full flex flex-col bg-background text-foreground overflow-hidden selection:bg-primary/20"
     >
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-40 dark:opacity-20"
+        >
+          <source src="/size.mp4" type="video/mp4" />
+          <track kind="captions" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/50 to-background" />
+      </div>
+
       {/* Background Pattern */}
       <div className="w-full absolute h-full z-0 bg-[radial-gradient(circle,_#888_0.5px,_transparent_0.5px)] dark:bg-[radial-gradient(circle,_#444_0.5px,_transparent_0.5px)] opacity-20 [background-size:24px_24px]" />
 
