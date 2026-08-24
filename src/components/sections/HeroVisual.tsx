@@ -33,6 +33,9 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
       // Typewriter for VERITA (Native JS setTimeout)
       const text = "VERITA";
       const titleEl = titleRef.current;
+      let timerId: NodeJS.Timeout;
+      let startTimerId: NodeJS.Timeout;
+
       if (titleEl) {
         titleEl.textContent = "";
         let i = 0;
@@ -42,7 +45,7 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
           if (i < text.length && titleEl) {
             titleEl.textContent += text.charAt(i);
             i++;
-            setTimeout(typeWriter, speed);
+            timerId = setTimeout(typeWriter, speed);
           } else {
             // Finished typing!
             // Fade out cursor gracefully
@@ -62,7 +65,7 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
         }
         
         // Start typing after a tiny delay (waiting for question to fade in)
-        setTimeout(typeWriter, 1500);
+        startTimerId = setTimeout(typeWriter, 1500);
 
         // Blinking cursor using border-right
         gsap.fromTo(titleEl, 
@@ -77,6 +80,11 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
         );
       }
       
+      // Cleanup custom timeouts on unmount or re-run
+      return () => {
+        clearTimeout(startTimerId);
+        clearTimeout(timerId);
+      };
     });
 
     return () => ctx.revert();
@@ -136,9 +144,7 @@ export function HeroVisual({ isExiting = false }: { isExiting?: boolean }) {
             ref={titleRef}
             className="text-[clamp(4rem,15vw,14rem)] font-medium tracking-[-0.04em] leading-[0.9] text-foreground uppercase whitespace-nowrap overflow-hidden border-r-[4px] border-foreground pr-2"
             style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif", fontWeight: 500, boxSizing: "content-box" }}
-          >
-            VERITA
-          </h1>
+          ></h1>
         </div>
 
         {/* Subtitle */}
