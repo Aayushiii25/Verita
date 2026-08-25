@@ -222,7 +222,7 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
             {/* Restart */}
             {phase === 'RESULTS' && (
                 <div className="pt-12 flex justify-center">
-                    <CustomButton label="Re-run Demo" onClick={onReset} />
+                    <CustomButton label="Re-run Demo" secondaryLabel="Restart" onClick={onReset} />
                 </div>
             )}
         </div>
