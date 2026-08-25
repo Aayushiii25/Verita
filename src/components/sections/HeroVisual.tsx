@@ -6,6 +6,52 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Spotlight } from "@/components/ui/spotlight-new";
 
+// --- SVG Filters for Custom Button ---
+const CustomButtonFilters = () => (
+  <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+      <svg className="filter">
+          <filter id="bump">
+              <feTurbulence result="noise" numOctaves="4" baseFrequency="0.678" type="fractalNoise" />
+              <feSpecularLighting result="specular" lightingColor="#fffffa" specularExponent="15" specularConstant="0.7" surfaceScale="0.22" in="noise">
+                  <fePointLight z="210" y="-50" x="40" />
+              </feSpecularLighting>
+              <feComposite result="noise2" operator="in" in="specular" in2="SourceGraphic" />
+              <feBlend mode="difference" in2="noise2" in="SourceGraphic" result="out" />
+              <feBlend mode="overlay" in2="out" in="SourceGraphic" />
+          </filter>
+      </svg>
+      <svg className="filter">
+          <defs>
+              <filter id="linen">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.9 0.03" numOctaves="2" seed="8" result="verticalNoise" />
+                  <feTurbulence type="fractalNoise" baseFrequency="0.03 0.9" numOctaves="2" seed="12" result="horizontalNoise" />
+                  <feBlend in="verticalNoise" in2="horizontalNoise" mode="multiply" result="woven" />
+                  <feComponentTransfer in="woven" result="threadContrast">
+                      <feFuncR type="gamma" amplitude="1.3" exponent="2.4" />
+                      <feFuncG type="gamma" amplitude="1.3" exponent="2.4" />
+                      <feFuncB type="gamma" amplitude="1.3" exponent="2.4" />
+                  </feComponentTransfer>
+                  <feGaussianBlur in="threadContrast" stdDeviation="0.22" result="softThreads" />
+                  <feComposite in="softThreads" in2="SourceGraphic" operator="in" result="textureMask" />
+                  <feBlend in="SourceGraphic" in2="textureMask" mode="color-burn" />
+              </filter>
+          </defs>
+      </svg>
+  </div>
+);
+
+const CustomButton = ({ label, secondaryLabel }: { label: string, secondaryLabel: string }) => (
+  <button className="btn">
+      <div className="fabric"></div>
+      <span className="txt">{label}</span>
+      <span className="txt">{secondaryLabel}</span>
+      <div className="shadow left"></div>
+      <div className="shadow right"></div>
+      <div className="dot"></div>
+      <div className="light"></div>
+  </button>
+);
+
 export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
   // Container & Background
   const journeyRef = useRef<HTMLDivElement>(null);
@@ -24,6 +70,10 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
   const screen2TitleRef = useRef<HTMLHeadingElement>(null);
   const screen2BodyRef = useRef<HTMLParagraphElement>(null);
   const screen2LabelsRef = useRef<HTMLDivElement>(null);
+
+  // Screen 3 (Starting Point) Refs
+  const screen3Ref = useRef<HTMLElement>(null);
+  const screen3ContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isReady) return;
@@ -105,11 +155,15 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       gsap.set(screen2BodyRef.current, { opacity: 0, y: 30 });
       gsap.set(screen2LabelsRef.current, { opacity: 0, scale: 0.9 });
 
+      // Initialize Screen 3 hidden state
+      gsap.set(screen3Ref.current, { opacity: 0, pointerEvents: "none" });
+      gsap.set(screen3ContentRef.current, { opacity: 0, y: 50 });
+
       const masterTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: journeyRef.current,
           start: "top top",
-          end: "+=2800", // Scroll duration
+          end: "+=2000", // Shorter scroll duration to make scrolling faster and easier
           scrub: 1,
           pin: true,
           anticipatePin: 1
@@ -119,20 +173,28 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       // Phase 1: Screen 1 Disappears & Zoom starts & Darken starts
       masterTimeline
         .to(videoBgRef.current, { scale: 1.1, ease: "none", transformOrigin: "center center" }, 0)
-        .to(darkOverlayRef.current, { opacity: 1, ease: "none" }, 0.2) // Gradually darken as we scroll down
+        .to(darkOverlayRef.current, { opacity: 1, backgroundColor: "rgba(0,0,0,0.7)", ease: "none" }, 0.2) // Gradually darken as we scroll down
         .to(screen1Ref.current, { opacity: 0, y: -80, scale: 0.95, ease: "none" }, 0);
 
       // Phase 2: Zoom continues & Screen 2 Appears
       masterTimeline
-        .to(videoBgRef.current, { scale: 1.8, ease: "none" }, 0.5) // Starts after Screen 1 fades
+        .to(videoBgRef.current, { scale: 1.4, ease: "none" }, 0.5) // Starts after Screen 1 fades
         .to(screen2EyebrowRef.current, { opacity: 1, y: 0, ease: "none" }, 0.6)
         .to(screen2TitleRef.current, { opacity: 1, y: 0, scale: 1, ease: "none" }, 0.7)
         .to(screen2BodyRef.current, { opacity: 1, y: 0, ease: "none" }, 0.8)
         .to(screen2LabelsRef.current, { opacity: 1, scale: 1, ease: "none" }, 0.9);
 
-      // End Phase: Move Screen 2 slightly up to prepare for natural page scrolling
+      // Phase 3: Screen 2 Disappears & Screen 3 Appears, Background transitions to nude tone
       masterTimeline
-        .to(screen2Ref.current, { opacity: 0.5, y: -50, ease: "none" }, 1.5);
+        .to(screen2Ref.current, { opacity: 0, y: -50, ease: "none" }, 1.3)
+        .to(videoBgRef.current, { scale: 1.8, ease: "none" }, 1.3)
+        .to(darkOverlayRef.current, { opacity: 0.9, backgroundColor: "rgba(245, 236, 230, 0.9)", ease: "none" }, 1.3) // Transition to a lighter nude tone
+        .to(screen3Ref.current, { opacity: 1, pointerEvents: "auto", ease: "none" }, 1.4)
+        .to(screen3ContentRef.current, { opacity: 1, y: 0, ease: "none" }, 1.5);
+
+      // End Phase: Move Screen 3 slightly up to prepare for natural page scrolling
+      masterTimeline
+        .to(screen3Ref.current, { y: -50, ease: "none" }, 2.0);
       
       return () => {
         clearTimeout(startTimerId);
@@ -243,6 +305,53 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
           <p className="text-xs font-mono text-muted-foreground/60 tracking-wider">04 RECORDS FOUND</p>
         </div>
 
+      </main>
+
+      {/* SCREEN 3 (Starting Point) */}
+      <main ref={screen3Ref} className="screen-3 absolute inset-0 z-30 flex flex-col items-center justify-center text-center w-full px-6 max-w-7xl mx-auto opacity-0 pointer-events-none will-change-transform">
+        <CustomButtonFilters />
+        
+        {/* Content Layer */}
+        <div ref={screen3ContentRef} className="relative z-10 flex flex-col items-center text-center w-full">
+            
+            {/* Main Headline */}
+            <div className="mb-6 mt-12">
+                <h2 className="text-[32px] sm:text-[48px] md:text-[64px] lg:text-[76px] font-bold tracking-tight leading-[0.92] text-zinc-900 dark:text-zinc-900 uppercase transition-all duration-700">
+                    CHOOSE YOUR <br />
+                    STARTING POINT.
+                </h2>
+            </div>
+
+            {/* Supporting Text */}
+            <div className="mb-12 max-w-2xl mx-auto">
+                <p className="text-base md:text-lg lg:text-xl font-medium text-zinc-800 dark:text-zinc-800 leading-relaxed tracking-tight drop-shadow-sm">
+                    Run a prepared batch to see VERITA in motion, or bring your own records into the system.
+                </p>
+            </div>
+
+            {/* Options Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 w-full max-w-4xl border-t border-zinc-900/10 pt-16 mb-8 mt-4">
+                
+                {/* Option 1: Run Demo */}
+                <div className="flex flex-col items-center space-y-8">
+                    <div className="space-y-2 text-center">
+                        <span className="text-zinc-900 text-xl font-bold uppercase tracking-widest block drop-shadow-sm">RUN DEMO</span>
+                        <p className="text-zinc-800 italic drop-shadow-sm">See a complete run</p>
+                    </div>
+                    <CustomButton label="Play" secondaryLabel="Stop" />
+                </div>
+
+                {/* Option 2: Use Your Data */}
+                <div className="flex flex-col items-center space-y-8">
+                    <div className="space-y-2 text-center">
+                        <span className="text-zinc-900 text-xl font-bold uppercase tracking-widest block drop-shadow-sm">USE YOUR DATA</span>
+                        <p className="text-zinc-800 italic drop-shadow-sm">Start with your records</p>
+                    </div>
+                    <CustomButton label="Upload" secondaryLabel="Stop" />
+                </div>
+
+            </div>
+        </div>
       </main>
 
     </motion.div>

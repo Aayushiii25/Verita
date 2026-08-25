@@ -177,122 +177,6 @@ const SlideReveal = ({ children, delay = 0, y = 30 }: { children: React.ReactNod
     </motion.div>
 );
 
-// --- SVG Filters for Custom Button ---
-const CustomButtonFilters = () => (
-    <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
-        <svg className="filter">
-            <filter id="bump">
-                <feTurbulence result="noise" numOctaves="4" baseFrequency="0.678" type="fractalNoise" />
-                <feSpecularLighting result="specular" lightingColor="#fffffa" specularExponent="15" specularConstant="0.7" surfaceScale="0.22" in="noise">
-                    <fePointLight z="210" y="-50" x="40" />
-                </feSpecularLighting>
-                <feComposite result="noise2" operator="in" in="specular" in2="SourceGraphic" />
-                <feBlend mode="difference" in2="noise2" in="SourceGraphic" result="out" />
-                <feBlend mode="overlay" in2="out" in="SourceGraphic" />
-            </filter>
-        </svg>
-        <svg className="filter">
-            <defs>
-                <filter id="linen">
-                    <feTurbulence type="fractalNoise" baseFrequency="0.9 0.03" numOctaves="2" seed="8" result="verticalNoise" />
-                    <feTurbulence type="fractalNoise" baseFrequency="0.03 0.9" numOctaves="2" seed="12" result="horizontalNoise" />
-                    <feBlend in="verticalNoise" in2="horizontalNoise" mode="multiply" result="woven" />
-                    <feComponentTransfer in="woven" result="threadContrast">
-                        <feFuncR type="gamma" amplitude="1.3" exponent="2.4" />
-                        <feFuncG type="gamma" amplitude="1.3" exponent="2.4" />
-                        <feFuncB type="gamma" amplitude="1.3" exponent="2.4" />
-                    </feComponentTransfer>
-                    <feGaussianBlur in="threadContrast" stdDeviation="0.22" result="softThreads" />
-                    <feComposite in="softThreads" in2="SourceGraphic" operator="in" result="textureMask" />
-                    <feBlend in="SourceGraphic" in2="textureMask" mode="color-burn" />
-                </filter>
-            </defs>
-        </svg>
-    </div>
-);
-
-const CustomButton = ({ label, secondaryLabel }: { label: string, secondaryLabel: string }) => (
-    <button className="btn">
-        <div className="fabric"></div>
-        <span className="txt">{label}</span>
-        <span className="txt">{secondaryLabel}</span>
-        <div className="shadow left"></div>
-        <div className="shadow right"></div>
-        <div className="dot"></div>
-        <div className="light"></div>
-    </button>
-);
-
-// --- Component 1: Editorial Lead-in ---
-const AboutLeadIn = () => {
-    return (
-        <div className="w-full max-w-[1650px] mx-auto px-6 py-6 flex justify-center items-center">
-            <CustomButtonFilters />
-            <motion.div
-                initial="hidden"
-                whileInView="show"
-                whileHover="hover"
-                viewport={{ once: false, amount: 0.2 }}
-                variants={{
-                    hidden: { opacity: 0, y: 80, scale: 0.96 },
-                    show: { 
-                        opacity: 1, 
-                        y: 0, 
-                        scale: 1, 
-                        transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } 
-                    }
-                }}
-                className="relative w-full bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 p-6 md:p-12 lg:p-16 overflow-hidden shadow-xl dark:shadow-2xl transition-colors duration-500 group"
-            >
-                {/* 1. Grid Background Overlay */}
-                <div className="absolute inset-0 z-0 bg-[radial-gradient(circle,_#00000008_1px,_transparent_1px)] dark:bg-[radial-gradient(circle,_#ffffff08_1px,_transparent_1px)] bg-[size:20px_20px] pointer-events-none transition-opacity" />
-
-                {/* Content Layer */}
-                <div className="relative z-10 flex flex-col items-center text-center">
-                    
-                    {/* Main Headline */}
-                    <div className="mb-6 mt-12">
-                        <h2 className="text-[32px] sm:text-[48px] md:text-[64px] lg:text-[76px] font-bold tracking-tight leading-[0.92] text-zinc-900 dark:text-white uppercase transition-all duration-700">
-                            CHOOSE YOUR <br />
-                            STARTING POINT.
-                        </h2>
-                    </div>
-
-                    {/* Supporting Text */}
-                    <div className="mb-12 max-w-2xl mx-auto">
-                        <p className="text-base md:text-lg lg:text-xl font-medium text-zinc-600 dark:text-zinc-400 leading-relaxed tracking-tight">
-                            Run a prepared batch to see VERITA in motion, or bring your own records into the system.
-                        </p>
-                    </div>
-
-                    {/* Options Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 w-full max-w-4xl border-t border-zinc-100 dark:border-zinc-900 pt-16 mb-8 mt-4">
-                        
-                        {/* Option 1: Run Demo */}
-                        <div className="flex flex-col items-center space-y-8">
-                            <div className="space-y-2 text-center">
-                                <span className="text-zinc-800 dark:text-zinc-200 text-xl font-bold uppercase tracking-widest block">RUN DEMO</span>
-                                <p className="text-zinc-500 italic">See a complete run</p>
-                            </div>
-                            <CustomButton label="Play" secondaryLabel="Stop" />
-                        </div>
-
-                        {/* Option 2: Use Your Data */}
-                        <div className="flex flex-col items-center space-y-8">
-                            <div className="space-y-2 text-center">
-                                <span className="text-zinc-800 dark:text-zinc-200 text-xl font-bold uppercase tracking-widest block">USE YOUR DATA</span>
-                                <p className="text-zinc-500 italic">Start with your records</p>
-                            </div>
-                            <CustomButton label="Upload" secondaryLabel="Stop" />
-                        </div>
-
-                    </div>
-                </div>
-            </motion.div>
-        </div>
-    );
-};
-
 // --- Tech Stack Logos (from portfolio.ts project data) ---
 const TECH_LOGOS = [
     { name: "Python", slug: "python" },
@@ -601,32 +485,14 @@ export default function AboutSection() {
         offset: ["start start", "end end"]
     });
 
-    // REALIGNED TIMING: Parent is ~900vh long. The first 100vh delay = ~11% (0.11) of total scroll.
-    const scale = useTransform(scrollYProgress, [0, 0.12], [1, 0.92]);
-    const opacity = useTransform(scrollYProgress, [0.03, 0.12], [1, 0]);
-    const yLeadIn = useTransform(scrollYProgress, [0, 0.12], [0, -80]);
-
-    const leadInTriggerRef = useRef(null);
-
     return (
         <section
             id="about"
             ref={containerRef}
             className="relative bg-background text-foreground dark:bg-black dark:text-white transition-colors duration-500"
         >
-            {/* 1. STICKY PLANE - Lead-in */}
-            <div className="sticky top-0 h-screen w-full flex items-center justify-center z-0 overflow-hidden pointer-events-none">
-                <motion.div
-                    style={{ scale, opacity, y: yLeadIn }}
-                    className="relative px-4 md:px-6 w-full max-w-[1700px] mx-auto"
-                    ref={leadInTriggerRef}
-                >
-                    <AboutLeadIn />
-                </motion.div>
-            </div>
-
             {/* 2. OVERLAY LAYER - Hijack Zone & Footer */}
-            <div className="relative pointer-events-none mt-[20vh] md:mt-[20vh]">
+            <div className="relative pointer-events-none mt-0">
                 {/* Content wrapper with background - rounded corners removed to allow animated border to control the shape */}
                 <div className="bg-background dark:bg-black transition-colors duration-500 pointer-events-auto relative">
 
