@@ -9,6 +9,7 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
     const [phase, setPhase] = useState<Phase>('INIT');
     const [ingestionData, setIngestionData] = useState<any>(null);
     const [reconciliationData, setReconciliationData] = useState<any>(null);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
     
     // Animation progress states
     const [fedSources, setFedSources] = useState<number>(0);
@@ -22,6 +23,7 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
             try {
                 // Fetch ingestion data
                 const resIngest = await fetch('/api/demo/run', { method: 'POST' });
+                if (!resIngest.ok) throw new Error("Backend server is not running or unreachable");
                 const ingestData = await resIngest.json();
                 setIngestionData(ingestData);
 
@@ -67,8 +69,9 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                 await new Promise(r => setTimeout(r, 1000));
                 setPhase('RESULTS');
 
-            } catch (err) {
+            } catch (err: any) {
                 console.error(err);
+                setErrorMsg(err.message || "Failed to fetch. Make sure uvicorn app.main:app is running.");
             }
         };
         
@@ -84,6 +87,14 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                     {phase}
                 </div>
             </div>
+
+            {errorMsg && (
+                <div className="bg-red-50 text-red-600 p-4 rounded-md border border-red-200">
+                    <h3 className="font-bold mb-1">Backend Connection Failed</h3>
+                    <p>{errorMsg}</p>
+                    <p className="mt-2 text-sm text-red-500">Please start the python backend server.</p>
+                </div>
+            )}
 
             {/* PHASE A: Feeding Sources */}
             <AnimatePresence>
