@@ -357,8 +357,25 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
                 </div>
 
                 {/* Option 2: Use Your Data */}
-                <div className="flex flex-col items-center space-y-8 opacity-0 pointer-events-none">
-                    {/* Hiding old content but keeping structure if needed for spacing, or just removing it */}
+                <div className="flex flex-col items-center space-y-8">
+                    <div className="space-y-2 text-center">
+                        <span className="text-zinc-900 text-xl font-bold uppercase tracking-widest block drop-shadow-sm">USE YOUR DATA</span>
+                        <p className="text-zinc-800 italic drop-shadow-sm">Start with your records</p>
+                    </div>
+                    <div style={{ pointerEvents: "auto" }}>
+                      <CustomButton 
+                        label="Upload" 
+                        secondaryLabel="Stop" 
+                        onClick={() => {
+                          if (journeyRef.current) {
+                            window.scrollTo({
+                              top: journeyRef.current.offsetTop + 2150,
+                              behavior: "smooth"
+                            });
+                          }
+                        }} 
+                      />
+                    </div>
                 </div>
 
             </div>
