@@ -351,12 +351,9 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
                         label="Upload" 
                         secondaryLabel="Stop" 
                         onClick={() => {
-                          if (journeyRef.current) {
-                            // Scroll exactly past the pinned hero visual (2000px padding + hero height)
-                            window.scrollTo({
-                              top: journeyRef.current.offsetTop + 2000 + window.innerHeight,
-                              behavior: "smooth"
-                            });
+                          const target = document.getElementById('professional-statistics');
+                          if (target) {
+                            target.scrollIntoView({ behavior: 'smooth' });
                           }
                         }} 
                       />
@@ -367,7 +364,6 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
         </div>
       </main>
 
-      {/* Removed the duplicated Screen 4 */}
     </motion.div>
   );
 }

@@ -69,7 +69,7 @@ export default function Testimonial1() {
   ];
 
   return (
-    <div className="bg-white dark:bg-black min-h-screen w-full grid place-content-center py-16 px-4 md:px-8 lg:px-16 relative">
+    <div id="professional-statistics" className="bg-white dark:bg-black min-h-screen w-full grid place-content-center py-16 px-4 md:px-8 lg:px-16 relative">
       <div className="max-w-6xl mx-auto">
         {/* Community Badge */}
         <div className="flex justify-center mb-6">
