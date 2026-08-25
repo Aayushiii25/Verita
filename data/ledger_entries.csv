@@ -1,0 +1,22 @@
+journal_id,posting_date,account_name,debit,credit,currency,narration,related_reference
+JNL-2026-07-0001,2026-07-03,Sales Revenue,,12190.0,INR,"Revenue - Zylora Direct sales, batch W1",INV-2026-07-1001;INV-2026-07-1004
+JNL-2026-07-0002,2026-07-09,Sales Revenue,,17700.0,INR,"Revenue - Zylora Direct sales, batch W2",INV-2026-07-1009;INV-2026-07-1012
+JNL-2026-07-0003,2026-07-16,Sales Revenue,,10950.0,INR,"Revenue - Zylora Direct sales, batch W3",INV-2026-07-1020;INV-2026-07-1024
+JNL-2026-07-0004,2026-07-06,Sales Revenue,,34550.0,INR,Revenue - Bazaarly marketplace sales,ORD-8F29A1;ORD-8F31C5;ORD-8F31E8
+JNL-2026-07-0005,2026-07-14,Sales Revenue,,52540.0,INR,Revenue - ShopKarma marketplace sales,INV-2026-07-1041;INV-2026-07-1045;INV-2026-07-1046;INV-2026-07-1050;INV-2026-07-1051
+JNL-2026-07-0006,2026-07-25,Sales Revenue,,57080.0,INR,Revenue - Vyapaar Mart marketplace sales,INV-2026-07-1058;INV-2026-07-1061;INV-2026-07-1062;INV-2026-07-1069;INV-2026-07-1073
+JNL-2026-07-0007,2026-07-08,Marketplace Commission Expense,3771.0,,INR,"Commission expense - Bazaarly (STLM-20260706-201, STLM-20260708-202)",STLM-20260706-201;STLM-20260708-202
+JNL-2026-07-0008,2026-07-16,Marketplace Commission Expense,6210.2,,INR,Commission expense - ShopKarma batch,STLM-20260712-301;STLM-20260714-302;STLM-20260716-303
+JNL-2026-07-0009,2026-07-28,Marketplace Commission Expense,10206.4,,INR,Commission expense - Vyapaar Mart batch,STLM-20260721-401;STLM-20260720-402;STLM-20260727-403;STLM-20260726-404;STLM-20260727-405
+JNL-2026-07-0010,2026-07-19,Payment Gateway Fee Expense,888.93,,INR,"PayNova gateway processing fees, July",Zylora Direct - PayNova
+JNL-2026-07-0011,2026-07-29,Payment Gateway Fee Expense,3024.74,,INR,"Marketplace payment-processing fees, July",Multiple settlements
+JNL-2026-07-0012,2026-07-12,Sales Returns / Refund Expense,1200.0,,INR,Customer return - ShopKarma order,INV-2026-07-1041
+JNL-2026-07-0013,2026-07-11,Bank Settlement Receivable,30020.0,,INR,Bank settlement receivable cleared - Bazaarly,STLM-20260706-201;STLM-20260708-202
+JNL-2026-07-0014,2026-07-19,Bank Settlement Receivable,38633.92,,INR,Bank settlement receivable cleared - ShopKarma,STLM-20260712-301;STLM-20260714-302;STLM-20260716-303
+JNL-2026-07-0015,2026-07-29,Bank Settlement Receivable,58593.74,,INR,Bank settlement receivable cleared - Vyapaar Mart,STLM-20260721-401;STLM-20260720-402;STLM-20260727-403;STLM-20260726-404;STLM-20260727-405
+JNL-2026-07-0016,2026-07-10,Sales Revenue,,15600.0,INR,"Revenue - Zylora Direct sale (re-post, correction pending)",INV-2026-07-1009
+JNL-2026-07-0017,2026-07-14,Marketplace Adjustment Expense,150.0,,INR,ShopKarma listing-fee adjustment deducted from settlement,STLM-20260714-302
+JNL-2026-07-0018,2026-07-21,Marketplace Adjustment Income,,120.0,INR,Vyapaar Mart prior-period correction credit,STLM-20260721-401
+JNL-2026-07-0019,2026-07-07,Bank Charges,354.2,,INR,Monthly average balance charges - HDFC Bank,
+JNL-2026-07-0020,2026-07-15,TDS Remittance,18240.0,,INR,TDS remitted to NSDL for July,CHLN29004471
+JNL-2026-07-0021,2026-07-19,Logistics Expense,9450.0,,INR,Payment to Swiftroute Logistics Pvt Ltd,REF-LOG-88213

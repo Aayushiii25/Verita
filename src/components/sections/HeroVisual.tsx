@@ -337,7 +337,7 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
                         <span className="text-zinc-900 text-xl font-bold uppercase tracking-widest block drop-shadow-sm">RUN DEMO</span>
                         <p className="text-zinc-800 italic drop-shadow-sm">See a complete run</p>
                     </div>
-                    <CustomButton label="Play" secondaryLabel="Stop" />
+                    <CustomButton label="Run Demo" onClick={() => window.location.href = '/demo'} />
                 </div>
 
                 {/* Option 2: Use Your Data */}
