@@ -606,3 +606,185 @@ html, body, * {
 .bg-book-gradient { background-image: var(--ds-book-gradient); }
 .book-rotate { transition: transform 0.5s ease-out; transform: rotateY(0deg); transform-style: preserve-3d; }
 .book-rotate:hover { transform: rotateY(-25deg); }
+
+/* From Uiverse.io by dexter-st */ 
+.btn {
+  cursor: pointer;
+  position: relative;
+  width: 160px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  border: solid 2px #bda049;
+  border-style: outset;
+  background-color: #37363e;
+  overflow: visible;
+  box-shadow:
+    inset 1px 1px 3px #0002,
+    inset 2px 2px 6px #0002,
+    inset 4px 4px 12px #0002,
+    inset 6px 6px 24px #0002,
+    1px 1px 2px 0px #000,
+    1px 1px 3px 0px #fff6,
+    2px 2px 4px 1px #fb02,
+    -1px -1px 2px -1px #000,
+    -2px -2px 4px 1px #000;
+}
+
+.fabric {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  filter: url(#linen);
+  pointer-events: none;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border-radius: 14px;
+  background-color: rgb(24, 26, 26);
+  filter: url(#bump);
+  z-index: -1;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: -19px;
+  border-radius: 15px;
+  border: 1px solid #0004;
+  border-bottom-color: #0008;
+  box-shadow:
+    inset 1px 1px 1px #ffc6,
+    inset 1px 3px 3px #ffc6,
+    inset 1px 5px 5px #0006,
+    inset 1px 7px 7px #0006,
+    0 4px 6px -3px #0004,
+    0 12px 8px -8px #0007;
+  z-index: -1;
+}
+
+.txt {
+  position: absolute;
+  z-index: 2;
+  color: white;
+  font-family: Garamond, serif;
+  font-size: 1.2em;
+  font-weight: bold;
+  font-style: italic;
+  text-shadow: 0 1px 1px #555;
+  transition: opacity 300ms ease;
+  opacity: 1;
+  text-transform: uppercase;
+}
+
+.txt:nth-child(3) {
+  opacity: 0;
+}
+
+.filter {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.shadow {
+  z-index: -2;
+  position: absolute;
+  bottom: -36px;
+  width: 120%;
+  height: 12px;
+  background: linear-gradient(to bottom, #000, 50%, #0000);
+  filter: blur(7px);
+  opacity: 0.25;
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+}
+
+.shadow::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  background-color: #00000015;
+}
+
+.shadow.left {
+  background-color: #aa001555;
+  transform: skewX(-70deg) translateX(-18px);
+}
+.shadow.right {
+  transform: skewX(70deg) translateX(18px) scaleY(1);
+}
+
+.light {
+  position: absolute;
+  left: 20%;
+  top: -32px;
+  width: 150px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #fa5;
+  filter: blur(24px);
+  z-index: 1;
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.dot {
+  position: absolute;
+  top: -11px;
+  right: 0px;
+  width: 6px;
+  height: 4px;
+  border-radius: 1px;
+  border: 1px solid #fff5;
+  box-shadow:
+    0 0 1px 0px rgba(255, 42, 9, 0),
+    0 0 6px 0px rgba(255, 42, 9, 0),
+    0 0 12px 1px rgba(255, 42, 9, 0);
+  background-color: #fff1;
+}
+
+.btn:hover {
+  .light {
+    opacity: 0.5;
+  }
+  .shadow.left {
+    transform: skewX(-75deg) translateX(-34px);
+  }
+  .shadow.right {
+    transform: skewX(75deg) translateX(34px) scaleY(1.1);
+  }
+  .shadow {
+    opacity: 0.4;
+  }
+}
+
+.btn:focus {
+  .txt {
+    opacity: 0;
+  }
+  .txt:nth-child(3) {
+    opacity: 1;
+  }
+  .dot {
+    animation: pulse 1s ease infinite;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow:
+      0 0 1px 0px rgba(255, 42, 9, 1),
+      0 0 6px 0px rgba(255, 42, 9, 1),
+      0 0 12px 1px rgba(255, 42, 9, 1);
+    background-color: rgb(255, 42, 9);
+  }
+}
