@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Spotlight } from "@/components/ui/spotlight-new";
@@ -54,8 +53,6 @@ const CustomButton = ({ label, secondaryLabel, onClick }: { label: string, secon
 );
 
 export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
-  const [isScreen4Open, setIsScreen4Open] = useState(false);
-
   // Container & Background
   const journeyRef = useRef<HTMLDivElement>(null);
   const videoBgRef = useRef<HTMLDivElement>(null);
@@ -77,6 +74,10 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
   // Screen 3 (Starting Point) Refs
   const screen3Ref = useRef<HTMLElement>(null);
   const screen3ContentRef = useRef<HTMLDivElement>(null);
+
+  // Screen 4 (Professional Statistics) Refs
+  const screen4Ref = useRef<HTMLElement>(null);
+  const screen4ContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isReady) return;
@@ -162,11 +163,15 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       gsap.set(screen3Ref.current, { opacity: 0, pointerEvents: "none" });
       gsap.set(screen3ContentRef.current, { opacity: 0, y: 50 });
 
+      // Initialize Screen 4 hidden state
+      gsap.set(screen4Ref.current, { opacity: 0, pointerEvents: "none" });
+      gsap.set(screen4ContentRef.current, { opacity: 0, y: 50 });
+
       const masterTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: journeyRef.current,
           start: "top top",
-          end: "+=2000", // Shorter scroll duration to make scrolling faster and easier
+          end: "+=2800", // Extend scroll duration to fit 4 screens
           scrub: 1,
           pin: true,
           anticipatePin: 1
@@ -176,12 +181,12 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       // Phase 1: Screen 1 Disappears & Zoom starts & Darken starts
       masterTimeline
         .to(videoBgRef.current, { scale: 1.1, ease: "none", transformOrigin: "center center" }, 0)
-        .to(darkOverlayRef.current, { opacity: 1, backgroundColor: "rgba(0,0,0,0.7)", ease: "none" }, 0.2) // Gradually darken as we scroll down
+        .to(darkOverlayRef.current, { opacity: 1, backgroundColor: "rgba(0,0,0,0.7)", ease: "none" }, 0.2)
         .to(screen1Ref.current, { opacity: 0, y: -80, scale: 0.95, ease: "none" }, 0);
 
       // Phase 2: Zoom continues & Screen 2 Appears
       masterTimeline
-        .to(videoBgRef.current, { scale: 1.4, ease: "none" }, 0.5) // Starts after Screen 1 fades
+        .to(videoBgRef.current, { scale: 1.4, ease: "none" }, 0.5)
         .to(screen2EyebrowRef.current, { opacity: 1, y: 0, ease: "none" }, 0.6)
         .to(screen2TitleRef.current, { opacity: 1, y: 0, scale: 1, ease: "none" }, 0.7)
         .to(screen2BodyRef.current, { opacity: 1, y: 0, ease: "none" }, 0.8)
@@ -191,13 +196,21 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       masterTimeline
         .to(screen2Ref.current, { opacity: 0, y: -50, ease: "none" }, 1.3)
         .to(videoBgRef.current, { scale: 1.8, ease: "none" }, 1.3)
-        .to(darkOverlayRef.current, { backgroundColor: "rgba(230, 215, 205, 0.35)", ease: "none" }, 1.3) // Soften nude tone significantly
+        .to(darkOverlayRef.current, { backgroundColor: "rgba(230, 215, 205, 0.35)", ease: "none" }, 1.3) // Soften nude tone
         .to(screen3Ref.current, { opacity: 1, pointerEvents: "auto", ease: "none" }, 1.4)
         .to(screen3ContentRef.current, { opacity: 1, y: 0, ease: "none" }, 1.5);
 
-      // End Phase: Move Screen 3 slightly up to prepare for natural page scrolling
+      // Phase 4: Screen 3 Disappears & Screen 4 Appears
       masterTimeline
-        .to(screen3Ref.current, { y: -50, ease: "none" }, 2.0);
+        .to(screen3Ref.current, { opacity: 0, y: -50, ease: "none" }, 2.0)
+        .to(videoBgRef.current, { scale: 2.0, ease: "none" }, 2.0)
+        .to(darkOverlayRef.current, { backgroundColor: "rgba(0, 0, 0, 0.95)", ease: "none" }, 2.0) // Transition back to pitch black
+        .to(screen4Ref.current, { opacity: 1, pointerEvents: "auto", ease: "none" }, 2.1)
+        .to(screen4ContentRef.current, { opacity: 1, y: 0, ease: "none" }, 2.2);
+
+      // End Phase: Move Screen 4 slightly up to prepare for natural page scrolling
+      masterTimeline
+        .to(screen4Ref.current, { y: -50, ease: "none" }, 2.8);
       
       return () => {
         clearTimeout(startTimerId);
@@ -312,7 +325,6 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
 
       {/* SCREEN 3 (Starting Point) */}
       <main ref={screen3Ref} className="screen-3 absolute inset-0 z-30 flex flex-col items-center justify-center text-center w-full px-6 max-w-7xl mx-auto opacity-0 pointer-events-none will-change-transform">
-        <CustomButtonFilters />
         
         {/* Content Layer */}
         <div ref={screen3ContentRef} className="relative z-10 flex flex-col items-center text-center w-full">
@@ -345,99 +357,65 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
                 </div>
 
                 {/* Option 2: Use Your Data */}
-                <div className="flex flex-col items-center space-y-8">
-                    <div className="space-y-2 text-center">
-                        <span className="text-zinc-900 text-xl font-bold uppercase tracking-widest block drop-shadow-sm">USE YOUR DATA</span>
-                        <p className="text-zinc-800 italic drop-shadow-sm">Start with your records</p>
-                    </div>
-                    <div style={{ pointerEvents: "auto" }}>
-                      <CustomButton label="Upload" secondaryLabel="Stop" onClick={() => { console.log('UPLOAD CLICKED'); setIsScreen4Open(true); }} />
-                    </div>
+                <div className="flex flex-col items-center space-y-8 opacity-0 pointer-events-none">
+                    {/* Hiding old content but keeping structure if needed for spacing, or just removing it */}
                 </div>
 
             </div>
         </div>
       </main>
 
-      {/* SCREEN 4: Slide-up Drawer (Upload) */}
-      {typeof document !== 'undefined' && createPortal(
-        <AnimatePresence>
-          {isScreen4Open && (
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed inset-0 z-[9999] bg-zinc-950 text-white flex flex-col items-center justify-center overflow-hidden"
-            >
-              {/* Optional Subtle Grid/Noise Background to match pattern */}
-              <div className="absolute inset-0 z-0 bg-[radial-gradient(circle,_#ffffff05_1px,_transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+      {/* SCREEN 4 (Professional Statistics) */}
+      <main ref={screen4Ref} className="screen-4 absolute inset-0 z-40 flex flex-col items-center justify-center text-center w-full px-6 max-w-7xl mx-auto opacity-0 pointer-events-none will-change-transform">
+        <div ref={screen4ContentRef} className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl px-6">
+          
+          {/* Badge */}
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 mb-12">
+            <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+            <span className="text-xs font-mono text-zinc-300 tracking-widest uppercase">Professional Statistics</span>
+          </div>
 
-              {/* Close Button */}
-              <button
-                onClick={() => setIsScreen4Open(false)}
-                className="absolute top-8 right-8 p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors z-50 group"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 group-hover:text-white transition-colors">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
+          {/* Big Headline */}
+          <h2 className="text-[32px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-bold tracking-tight leading-[1.1] text-white transition-all duration-700 mb-16 drop-shadow-lg max-w-4xl">
+            Data that speaks. AI that reasons.<br/>
+            Software that ships.<br/>
+            Three disciplines, one engineer<br/>
+            and the numbers behind the work.
+          </h2>
+          
+          {/* Statistics Box */}
+          <div className="w-full max-w-4xl bg-zinc-900/40 border border-zinc-800/50 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0 backdrop-blur-md">
+            
+            <div className="flex flex-col items-center flex-1">
+              <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Current GPA</p>
+              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">3.62<span className="text-zinc-500 text-2xl">/4.0</span></p>
+            </div>
 
-              {/* Screen 4 Content - Cinematic Layout */}
-              <div className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl px-6">
-                
-                {/* Badge */}
-                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 mb-12">
-                  <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-                  <span className="text-xs font-mono text-zinc-300 tracking-widest uppercase">Professional Statistics</span>
-                </div>
+            <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
 
-                {/* Big Headline */}
-                <h2 className="text-[32px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-bold tracking-tight leading-[1.1] text-white transition-all duration-700 mb-16 drop-shadow-lg max-w-4xl">
-                  Data that speaks. AI that reasons.<br/>
-                  Software that ships.<br/>
-                  Three disciplines, one engineer<br/>
-                  and the numbers behind the work.
-                </h2>
-                
-                {/* Statistics Box */}
-                <div className="w-full max-w-4xl bg-zinc-900/40 border border-zinc-800/50 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0 backdrop-blur-md">
-                  
-                  <div className="flex flex-col items-center flex-1">
-                    <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Current GPA</p>
-                    <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">3.62<span className="text-zinc-500 text-2xl">/4.0</span></p>
-                  </div>
+            <div className="flex flex-col items-center flex-1">
+              <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Projects Completed</p>
+              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">20+</p>
+            </div>
 
-                  <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
+            <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
 
-                  <div className="flex flex-col items-center flex-1">
-                    <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Projects Completed</p>
-                    <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">20+</p>
-                  </div>
+            <div className="flex flex-col items-center flex-1">
+              <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Professional Exp</p>
+              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">2<span className="text-zinc-400 text-2xl ml-1 font-medium tracking-normal">Years</span></p>
+            </div>
 
-                  <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
+            <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
 
-                  <div className="flex flex-col items-center flex-1">
-                    <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Professional Exp</p>
-                    <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">2<span className="text-zinc-400 text-2xl ml-1 font-medium tracking-normal">Years</span></p>
-                  </div>
+            <div className="flex flex-col items-center flex-1">
+              <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Tech & Tools</p>
+              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">34+</p>
+            </div>
 
-                  <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
+          </div>
 
-                  <div className="flex flex-col items-center flex-1">
-                    <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Tech & Tools</p>
-                    <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">34+</p>
-                  </div>
-
-                </div>
-
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+        </div>
+      </main>
     </motion.div>
   );
 }
