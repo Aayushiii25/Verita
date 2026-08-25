@@ -75,10 +75,6 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
   const screen3Ref = useRef<HTMLElement>(null);
   const screen3ContentRef = useRef<HTMLDivElement>(null);
 
-  // Screen 4 (Professional Statistics) Refs
-  const screen4Ref = useRef<HTMLElement>(null);
-  const screen4ContentRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (!isReady) return;
 
@@ -163,15 +159,11 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       gsap.set(screen3Ref.current, { opacity: 0, pointerEvents: "none" });
       gsap.set(screen3ContentRef.current, { opacity: 0, y: 50 });
 
-      // Initialize Screen 4 hidden state
-      gsap.set(screen4Ref.current, { opacity: 0, pointerEvents: "none" });
-      gsap.set(screen4ContentRef.current, { opacity: 0, y: 50 });
-
       const masterTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: journeyRef.current,
           start: "top top",
-          end: "+=2800", // Extend scroll duration to fit 4 screens
+          end: "+=2000", // Back to original scroll duration for 3 screens
           scrub: 1,
           pin: true,
           anticipatePin: 1
@@ -181,12 +173,12 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       // Phase 1: Screen 1 Disappears & Zoom starts & Darken starts
       masterTimeline
         .to(videoBgRef.current, { scale: 1.1, ease: "none", transformOrigin: "center center" }, 0)
-        .to(darkOverlayRef.current, { opacity: 1, backgroundColor: "rgba(0,0,0,0.7)", ease: "none" }, 0.2)
+        .to(darkOverlayRef.current, { opacity: 1, backgroundColor: "rgba(0,0,0,0.7)", ease: "none" }, 0.2) // Gradually darken as we scroll down
         .to(screen1Ref.current, { opacity: 0, y: -80, scale: 0.95, ease: "none" }, 0);
 
       // Phase 2: Zoom continues & Screen 2 Appears
       masterTimeline
-        .to(videoBgRef.current, { scale: 1.4, ease: "none" }, 0.5)
+        .to(videoBgRef.current, { scale: 1.4, ease: "none" }, 0.5) // Starts after Screen 1 fades
         .to(screen2EyebrowRef.current, { opacity: 1, y: 0, ease: "none" }, 0.6)
         .to(screen2TitleRef.current, { opacity: 1, y: 0, scale: 1, ease: "none" }, 0.7)
         .to(screen2BodyRef.current, { opacity: 1, y: 0, ease: "none" }, 0.8)
@@ -196,21 +188,13 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       masterTimeline
         .to(screen2Ref.current, { opacity: 0, y: -50, ease: "none" }, 1.3)
         .to(videoBgRef.current, { scale: 1.8, ease: "none" }, 1.3)
-        .to(darkOverlayRef.current, { backgroundColor: "rgba(230, 215, 205, 0.35)", ease: "none" }, 1.3) // Soften nude tone
+        .to(darkOverlayRef.current, { backgroundColor: "rgba(230, 215, 205, 0.35)", ease: "none" }, 1.3) // Soften nude tone significantly
         .to(screen3Ref.current, { opacity: 1, pointerEvents: "auto", ease: "none" }, 1.4)
         .to(screen3ContentRef.current, { opacity: 1, y: 0, ease: "none" }, 1.5);
 
-      // Phase 4: Screen 3 Disappears & Screen 4 Appears
+      // End Phase: Move Screen 3 slightly up to prepare for natural page scrolling
       masterTimeline
-        .to(screen3Ref.current, { opacity: 0, y: -50, ease: "none" }, 2.0)
-        .to(videoBgRef.current, { scale: 2.0, ease: "none" }, 2.0)
-        .to(darkOverlayRef.current, { backgroundColor: "rgba(0, 0, 0, 0.95)", ease: "none" }, 2.0) // Transition back to pitch black
-        .to(screen4Ref.current, { opacity: 1, pointerEvents: "auto", ease: "none" }, 2.1)
-        .to(screen4ContentRef.current, { opacity: 1, y: 0, ease: "none" }, 2.2);
-
-      // End Phase: Move Screen 4 slightly up to prepare for natural page scrolling
-      masterTimeline
-        .to(screen4Ref.current, { y: -50, ease: "none" }, 2.8);
+        .to(screen3Ref.current, { y: -50, ease: "none" }, 2.0);
       
       return () => {
         clearTimeout(startTimerId);
@@ -368,8 +352,9 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
                         secondaryLabel="Stop" 
                         onClick={() => {
                           if (journeyRef.current) {
+                            // Scroll exactly past the pinned hero visual (2000px padding + hero height)
                             window.scrollTo({
-                              top: journeyRef.current.offsetTop + 2150,
+                              top: journeyRef.current.offsetTop + 2000 + window.innerHeight,
                               behavior: "smooth"
                             });
                           }
@@ -382,57 +367,7 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
         </div>
       </main>
 
-      {/* SCREEN 4 (Professional Statistics) */}
-      <main ref={screen4Ref} className="screen-4 absolute inset-0 z-40 flex flex-col items-center justify-center text-center w-full px-6 max-w-7xl mx-auto opacity-0 pointer-events-none will-change-transform">
-        <div ref={screen4ContentRef} className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl px-6">
-          
-          {/* Badge */}
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 mb-12">
-            <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-            <span className="text-xs font-mono text-zinc-300 tracking-widest uppercase">Professional Statistics</span>
-          </div>
-
-          {/* Big Headline */}
-          <h2 className="text-[32px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-bold tracking-tight leading-[1.1] text-white transition-all duration-700 mb-16 drop-shadow-lg max-w-4xl">
-            Data that speaks. AI that reasons.<br/>
-            Software that ships.<br/>
-            Three disciplines, one engineer<br/>
-            and the numbers behind the work.
-          </h2>
-          
-          {/* Statistics Box */}
-          <div className="w-full max-w-4xl bg-zinc-900/40 border border-zinc-800/50 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0 backdrop-blur-md">
-            
-            <div className="flex flex-col items-center flex-1">
-              <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Current GPA</p>
-              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">3.62<span className="text-zinc-500 text-2xl">/4.0</span></p>
-            </div>
-
-            <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
-
-            <div className="flex flex-col items-center flex-1">
-              <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Projects Completed</p>
-              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">20+</p>
-            </div>
-
-            <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
-
-            <div className="flex flex-col items-center flex-1">
-              <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Professional Exp</p>
-              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">2<span className="text-zinc-400 text-2xl ml-1 font-medium tracking-normal">Years</span></p>
-            </div>
-
-            <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
-
-            <div className="flex flex-col items-center flex-1">
-              <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Tech & Tools</p>
-              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">34+</p>
-            </div>
-
-          </div>
-
-        </div>
-      </main>
+      {/* Removed the duplicated Screen 4 */}
     </motion.div>
   );
 }
