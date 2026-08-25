@@ -325,7 +325,7 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
             {/* Supporting Text */}
             <div className="mb-12 max-w-2xl mx-auto">
                 <p className="text-base md:text-lg lg:text-xl font-medium text-zinc-800 dark:text-zinc-800 leading-relaxed tracking-tight drop-shadow-sm">
-                    Run a prepared batch to see VERITA in motion, or bring your own records into the system.
+                    Identify the source. Validate the data. Prepare the batch.
                 </p>
             </div>
 
