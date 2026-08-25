@@ -150,17 +150,19 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       className="cinematic-journey relative h-screen w-full bg-background text-foreground overflow-hidden selection:bg-primary/20"
     >
       {/* Shared Background Video Layer */}
-      <div ref={videoBgRef} className="absolute inset-0 z-0 w-full h-full will-change-transform">
+      <div ref={videoBgRef} className="absolute inset-0 z-0 w-full h-full will-change-transform bg-black">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-80 dark:opacity-60"
+          className="absolute inset-0 w-full h-full object-cover opacity-60 dark:opacity-40 mix-blend-luminosity"
         >
           <source src="/size.mp4" type="video/mp4" />
           <track kind="captions" />
         </video>
+        {/* Darkening overlay for text contrast */}
+        <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/10 to-background" />
         
         {/* Background Pattern */}
