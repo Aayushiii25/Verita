@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Spotlight } from "@/components/ui/spotlight-new";
@@ -40,8 +40,8 @@ const CustomButtonFilters = () => (
   </div>
 );
 
-const CustomButton = ({ label, secondaryLabel }: { label: string, secondaryLabel: string }) => (
-  <button className="btn">
+const CustomButton = ({ label, secondaryLabel, onClick }: { label: string, secondaryLabel: string, onClick?: () => void }) => (
+  <button className="btn" onClick={onClick}>
       <div className="fabric"></div>
       <span className="txt">{label}</span>
       <span className="txt">{secondaryLabel}</span>
@@ -53,6 +53,8 @@ const CustomButton = ({ label, secondaryLabel }: { label: string, secondaryLabel
 );
 
 export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
+  const [isScreen4Open, setIsScreen4Open] = useState(false);
+
   // Container & Background
   const journeyRef = useRef<HTMLDivElement>(null);
   const videoBgRef = useRef<HTMLDivElement>(null);
@@ -347,12 +349,59 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
                         <span className="text-zinc-900 text-xl font-bold uppercase tracking-widest block drop-shadow-sm">USE YOUR DATA</span>
                         <p className="text-zinc-800 italic drop-shadow-sm">Start with your records</p>
                     </div>
-                    <CustomButton label="Upload" secondaryLabel="Stop" />
+                    <CustomButton label="Upload" secondaryLabel="Stop" onClick={() => setIsScreen4Open(true)} />
                 </div>
 
             </div>
         </div>
       </main>
+
+      {/* SCREEN 4: Slide-up Drawer (Upload) */}
+      <AnimatePresence>
+        {isScreen4Open && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsScreen4Open(false)}
+              className="fixed inset-0 z-[40] bg-black/60 backdrop-blur-sm"
+            />
+            {/* Drawer */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed inset-x-0 bottom-0 z-[50] bg-white text-zinc-900 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.3)] p-8 pt-12 flex flex-col items-center"
+              style={{ height: '80vh' }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsScreen4Open(false)}
+                className="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 transition-colors"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+
+              {/* Screen 4 Content */}
+              <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-widest mb-4">Upload Records</h2>
+              <p className="text-zinc-600 mb-8 max-w-lg text-center font-medium">
+                Securely bring your own data into the system for validation and processing.
+              </p>
+              
+              {/* Drag & Drop Area */}
+              <div className="w-full max-w-2xl border-2 border-dashed border-zinc-300 rounded-xl p-16 flex flex-col items-center justify-center bg-zinc-50 hover:bg-zinc-100 transition-colors cursor-pointer group">
+                <svg className="w-12 h-12 text-zinc-400 group-hover:text-zinc-600 transition-colors mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                <p className="text-zinc-500 group-hover:text-zinc-700 transition-colors font-medium">Drag & drop your files here, or click to browse</p>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
     </motion.div>
   );
