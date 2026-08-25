@@ -188,7 +188,7 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       masterTimeline
         .to(screen2Ref.current, { opacity: 0, y: -50, ease: "none" }, 1.3)
         .to(videoBgRef.current, { scale: 1.8, ease: "none" }, 1.3)
-        .to(darkOverlayRef.current, { opacity: 0.9, backgroundColor: "rgba(245, 236, 230, 0.9)", ease: "none" }, 1.3) // Transition to a lighter nude tone
+        .to(darkOverlayRef.current, { backgroundColor: "rgba(230, 215, 205, 0.35)", ease: "none" }, 1.3) // Soften nude tone significantly
         .to(screen3Ref.current, { opacity: 1, pointerEvents: "auto", ease: "none" }, 1.4)
         .to(screen3ContentRef.current, { opacity: 1, y: 0, ease: "none" }, 1.5);
 
