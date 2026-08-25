@@ -363,47 +363,50 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       {typeof document !== 'undefined' && createPortal(
         <AnimatePresence>
           {isScreen4Open && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsScreen4Open(false)}
-                className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm"
-              />
-              {/* Drawer */}
-              <motion.div
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                exit={{ y: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="fixed inset-x-0 bottom-0 z-[9999] bg-white text-zinc-900 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.3)] p-8 pt-12 flex flex-col items-center"
-                style={{ height: '80vh' }}
-              >
-                {/* Close Button */}
-                <button
-                  onClick={() => setIsScreen4Open(false)}
-                  className="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 transition-colors"
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed inset-0 z-[9999] bg-zinc-950 text-white flex flex-col items-center justify-center overflow-hidden"
+            >
+              {/* Optional Subtle Grid/Noise Background to match pattern */}
+              <div className="absolute inset-0 z-0 bg-[radial-gradient(circle,_#ffffff05_1px,_transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
 
-                {/* Screen 4 Content */}
-                <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-widest mb-4">Upload Records</h2>
-                <p className="text-zinc-600 mb-8 max-w-lg text-center font-medium">
+              {/* Close Button */}
+              <button
+                onClick={() => setIsScreen4Open(false)}
+                className="absolute top-8 right-8 p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors z-50 group"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 group-hover:text-white transition-colors">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+
+              {/* Screen 4 Content - Cinematic Layout */}
+              <div className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl px-6">
+                
+                <h2 className="text-[32px] sm:text-[48px] md:text-[64px] font-bold tracking-tight leading-[0.92] text-white uppercase transition-all duration-700 mb-6 drop-shadow-lg">
+                  UPLOAD <br /> RECORDS.
+                </h2>
+                
+                <p className="text-base md:text-lg lg:text-xl font-medium text-zinc-400 leading-relaxed tracking-tight mb-12 max-w-2xl">
                   Securely bring your own data into the system for validation and processing.
                 </p>
                 
-                {/* Drag & Drop Area */}
-                <div className="w-full max-w-2xl border-2 border-dashed border-zinc-300 rounded-xl p-16 flex flex-col items-center justify-center bg-zinc-50 hover:bg-zinc-100 transition-colors cursor-pointer group">
-                  <svg className="w-12 h-12 text-zinc-400 group-hover:text-zinc-600 transition-colors mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                {/* Drag & Drop Area - Dark Theme */}
+                <div className="w-full max-w-2xl border-2 border-dashed border-zinc-700/50 rounded-2xl p-16 flex flex-col items-center justify-center bg-white/[0.02] hover:bg-white/[0.04] transition-colors cursor-pointer group backdrop-blur-sm">
+                  <svg className="w-12 h-12 text-zinc-600 group-hover:text-zinc-300 transition-colors mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
-                  <p className="text-zinc-500 group-hover:text-zinc-700 transition-colors font-medium">Drag & drop your files here, or click to browse</p>
+                  <p className="text-zinc-400 group-hover:text-zinc-200 transition-colors font-medium tracking-wide">
+                    Drag & drop your files here, or click to browse
+                  </p>
                 </div>
-              </motion.div>
-            </>
+
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>,
         document.body
