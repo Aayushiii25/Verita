@@ -387,22 +387,49 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
               {/* Screen 4 Content - Cinematic Layout */}
               <div className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl px-6">
                 
-                <h2 className="text-[32px] sm:text-[48px] md:text-[64px] font-bold tracking-tight leading-[0.92] text-white uppercase transition-all duration-700 mb-6 drop-shadow-lg">
-                  UPLOAD <br /> RECORDS.
+                {/* Badge */}
+                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 mb-12">
+                  <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                  <span className="text-xs font-mono text-zinc-300 tracking-widest uppercase">Professional Statistics</span>
+                </div>
+
+                {/* Big Headline */}
+                <h2 className="text-[32px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-bold tracking-tight leading-[1.1] text-white transition-all duration-700 mb-16 drop-shadow-lg max-w-4xl">
+                  Data that speaks. AI that reasons.<br/>
+                  Software that ships.<br/>
+                  Three disciplines, one engineer<br/>
+                  and the numbers behind the work.
                 </h2>
                 
-                <p className="text-base md:text-lg lg:text-xl font-medium text-zinc-400 leading-relaxed tracking-tight mb-12 max-w-2xl">
-                  Securely bring your own data into the system for validation and processing.
-                </p>
-                
-                {/* Drag & Drop Area - Dark Theme */}
-                <div className="w-full max-w-2xl border-2 border-dashed border-zinc-700/50 rounded-2xl p-16 flex flex-col items-center justify-center bg-white/[0.02] hover:bg-white/[0.04] transition-colors cursor-pointer group backdrop-blur-sm">
-                  <svg className="w-12 h-12 text-zinc-600 group-hover:text-zinc-300 transition-colors mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                  </svg>
-                  <p className="text-zinc-400 group-hover:text-zinc-200 transition-colors font-medium tracking-wide">
-                    Drag & drop your files here, or click to browse
-                  </p>
+                {/* Statistics Box */}
+                <div className="w-full max-w-4xl bg-zinc-900/40 border border-zinc-800/50 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0 backdrop-blur-md">
+                  
+                  <div className="flex flex-col items-center flex-1">
+                    <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Current GPA</p>
+                    <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">3.62<span className="text-zinc-500 text-2xl">/4.0</span></p>
+                  </div>
+
+                  <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
+
+                  <div className="flex flex-col items-center flex-1">
+                    <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Projects Completed</p>
+                    <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">20+</p>
+                  </div>
+
+                  <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
+
+                  <div className="flex flex-col items-center flex-1">
+                    <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Professional Exp</p>
+                    <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">2<span className="text-zinc-400 text-2xl ml-1 font-medium tracking-normal">Years</span></p>
+                  </div>
+
+                  <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-zinc-700 to-transparent opacity-50"></div>
+
+                  <div className="flex flex-col items-center flex-1">
+                    <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mb-2">Tech & Tools</p>
+                    <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">34+</p>
+                  </div>
+
                 </div>
 
               </div>
