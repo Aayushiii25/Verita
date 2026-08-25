@@ -10,6 +10,7 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
   // Container & Background
   const journeyRef = useRef<HTMLDivElement>(null);
   const videoBgRef = useRef<HTMLDivElement>(null);
+  const darkOverlayRef = useRef<HTMLDivElement>(null);
   
   // Screen 1 (VERITA) Refs
   const screen1Ref = useRef<HTMLElement>(null);
@@ -115,9 +116,10 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
         }
       });
 
-      // Phase 1: Screen 1 Disappears & Zoom starts
+      // Phase 1: Screen 1 Disappears & Zoom starts & Darken starts
       masterTimeline
         .to(videoBgRef.current, { scale: 1.1, ease: "none", transformOrigin: "center center" }, 0)
+        .to(darkOverlayRef.current, { opacity: 1, ease: "none" }, 0.2) // Gradually darken as we scroll down
         .to(screen1Ref.current, { opacity: 0, y: -80, scale: 0.95, ease: "none" }, 0);
 
       // Phase 2: Zoom continues & Screen 2 Appears
@@ -150,19 +152,19 @@ export function HeroVisual({ isReady = true }: { isReady?: boolean }) {
       className="cinematic-journey relative h-screen w-full bg-background text-foreground overflow-hidden selection:bg-primary/20"
     >
       {/* Shared Background Video Layer */}
-      <div ref={videoBgRef} className="absolute inset-0 z-0 w-full h-full will-change-transform bg-black">
+      <div ref={videoBgRef} className="absolute inset-0 z-0 w-full h-full will-change-transform">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-60 dark:opacity-40 mix-blend-luminosity"
+          className="absolute inset-0 w-full h-full object-cover opacity-80 dark:opacity-60"
         >
           <source src="/size.mp4" type="video/mp4" />
           <track kind="captions" />
         </video>
-        {/* Darkening overlay for text contrast */}
-        <div className="absolute inset-0 bg-black/50" />
+        {/* Darkening overlay for text contrast (Fades in on scroll) */}
+        <div ref={darkOverlayRef} className="absolute inset-0 bg-black/70 opacity-0" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/10 to-background" />
         
         {/* Background Pattern */}
