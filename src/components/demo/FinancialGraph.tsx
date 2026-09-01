@@ -93,7 +93,7 @@ export default function FinancialGraph() {
     useEffect(() => {
         const fetchGraph = async () => {
             try {
-                const res = await fetch('http://localhost:8000/api/graph', { method: 'POST' });
+                const res = await fetch('/api/demo/graph', { method: 'POST' });
                 const data = await res.json();
                 setGraphData(data);
                 setLoading(false);

@@ -46,9 +46,9 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
 
                 await new Promise(r => setTimeout(r, 1000));
 
-                // Fetch reconciliation data from real backend
+                // Fetch reconciliation data from mock API (for Vercel deployment)
                 setPhase('RECONCILING');
-                const resRecon = await fetch('http://localhost:8000/api/reconcile', { method: 'POST' });
+                const resRecon = await fetch('/api/demo/reconcile', { method: 'POST' });
                 const reconData = await resRecon.json();
                 setReconciliationData(reconData);
                 
