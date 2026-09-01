@@ -172,7 +172,7 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                 </div>
                                 {phase === 'RESULTS' && reconciliationData && (
                                     <div className="p-4 space-y-4 max-h-[500px] overflow-y-auto">
-                                        {reconciliationData.MATCHED.map((item: any, idx: number) => (
+                                        {reconciliationData.MATCHED.slice(0, 3).map((item: any, idx: number) => (
                                             <div key={idx} className="bg-white/50 border border-gray-200 p-3 rounded-lg text-sm">
                                                 <div className="flex justify-between text-gray-400 text-xs mb-2 font-mono">
                                                     <span>{item.settlement_id}</span>
@@ -181,6 +181,11 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                                 <p className="text-gray-700">{item.reason}</p>
                                             </div>
                                         ))}
+                                        {reconCounts.MATCHED > 3 && (
+                                            <p className="text-xs text-gray-400 font-mono text-center pt-2">
+                                                and {reconCounts.MATCHED - 3} more records…
+                                            </p>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -193,7 +198,7 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                 </div>
                                 {phase === 'RESULTS' && reconciliationData && (
                                     <div className="p-4 space-y-4 max-h-[500px] overflow-y-auto">
-                                        {reconciliationData.REVIEW.map((item: any, idx: number) => (
+                                        {reconciliationData.REVIEW.slice(0, 3).map((item: any, idx: number) => (
                                             <div key={idx} className="bg-white/50 border border-gray-200 p-3 rounded-lg text-sm">
                                                 <div className="flex justify-between text-gray-400 text-xs mb-2 font-mono">
                                                     <span>{item.invoice_ids.join(', ')}</span>
@@ -201,6 +206,11 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                                 <p className="text-gray-700">{item.reason}</p>
                                             </div>
                                         ))}
+                                        {reconCounts.REVIEW > 3 && (
+                                            <p className="text-xs text-gray-400 font-mono text-center pt-2">
+                                                and {reconCounts.REVIEW - 3} more records…
+                                            </p>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -213,7 +223,7 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                 </div>
                                 {phase === 'RESULTS' && reconciliationData && (
                                     <div className="p-4 space-y-4 max-h-[500px] overflow-y-auto">
-                                        {reconciliationData.EXCEPTIONS.map((item: any, idx: number) => (
+                                        {reconciliationData.EXCEPTIONS.slice(0, 3).map((item: any, idx: number) => (
                                             <div key={idx} className="bg-white/50 border border-gray-200 p-3 rounded-lg text-sm">
                                                 <div className="flex justify-between text-gray-400 text-xs mb-2 font-mono">
                                                     <span>{item.bank_id || item.invoice_ids.join(', ')}</span>
@@ -221,6 +231,11 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                                 <p className="text-gray-700">{item.reason}</p>
                                             </div>
                                         ))}
+                                        {reconCounts.EXCEPTIONS > 3 && (
+                                            <p className="text-xs text-gray-400 font-mono text-center pt-2">
+                                                and {reconCounts.EXCEPTIONS - 3} more records…
+                                            </p>
+                                        )}
                                     </div>
                                 )}
                             </div>
