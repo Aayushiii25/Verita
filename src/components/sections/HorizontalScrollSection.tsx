@@ -5,60 +5,90 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Spotlight } from "@/components/ui/spotlight-new";
 
-export function HorizontalScrollSection({ isReady = true }: { isReady?: boolean }) {
-  const [error, setError] = React.useState<string | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+/**
+ * HorizontalScrollSection
+ * 
+ * Uses the exact same pattern as HeroVisual (Slide 1):
+ * - Single h-screen container with pin: true
+ * - Absolute-positioned video2.mp4 background with zoom + darken on scroll
+ * - Content panels stacked absolutely, animated with x-translate via GSAP
+ * - No actual CSS overflow — all movement is transform-based
+ */
+export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean }) {
+  const sectionRef = useRef<HTMLDivElement>(null);
   const videoBgRef = useRef<HTMLDivElement>(null);
   const darkOverlayRef = useRef<HTMLDivElement>(null);
 
+  // Panel refs
+  const panel1Ref = useRef<HTMLDivElement>(null);
+  const panel2Ref = useRef<HTMLDivElement>(null);
+  const panel3Ref = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!isReady) return;
-    
-    try {
-      gsap.registerPlugin(ScrollTrigger);
 
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Small delay to let HeroVisual's ScrollTrigger fully initialize first
+    const initTimer = setTimeout(() => {
       const ctx = gsap.context(() => {
-        if (!sectionRef.current || !trackRef.current) return;
+        if (!sectionRef.current) return;
 
-        const track = trackRef.current;
-        const getScrollAmount = () => -(track.scrollWidth - window.innerWidth);
+        // Initialize panels: Panel 1 visible, Panel 2 & 3 off-screen right
+        gsap.set(panel1Ref.current, { x: 0, opacity: 1 });
+        gsap.set(panel2Ref.current, { x: "100vw", opacity: 0 });
+        gsap.set(panel3Ref.current, { x: "100vw", opacity: 0 });
 
-        const tl = gsap.timeline({
+        const masterTl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: () => `+=${track.scrollWidth}`,
-            pin: true,
+            end: "+=3000",
             scrub: 1,
+            pin: true,
             anticipatePin: 1,
-            invalidateOnRefresh: true,
           }
         });
 
-        tl.to(videoBgRef.current, { scale: 1.3, ease: "none" }, 0)
-          .to(darkOverlayRef.current, { opacity: 0.8, ease: "none" }, 0);
+        // Background zoom & darken (same as HeroVisual)
+        masterTl
+          .to(videoBgRef.current, { scale: 1.4, ease: "none" }, 0)
+          .to(darkOverlayRef.current, { opacity: 0.85, ease: "none" }, 0);
 
-        tl.to(track, {
-          x: getScrollAmount,
-          ease: "none"
-        }, 0);
+        // Phase 1: Panel 1 exits left, Panel 2 enters from right
+        masterTl
+          .to(panel1Ref.current, { x: "-100vw", opacity: 0, ease: "none" }, 0.3)
+          .to(panel2Ref.current, { x: 0, opacity: 1, ease: "none" }, 0.3);
+
+        // Phase 2: Panel 2 exits left, Panel 3 enters from right
+        masterTl
+          .to(panel2Ref.current, { x: "-100vw", opacity: 0, ease: "none" }, 0.7)
+          .to(panel3Ref.current, { x: 0, opacity: 1, ease: "none" }, 0.7);
+
+        // Background continues zooming
+        masterTl
+          .to(videoBgRef.current, { scale: 1.8, ease: "none" }, 0.7);
 
       }, sectionRef);
 
-      return () => ctx.revert();
-    } catch (e: any) {
-      setError(e.message || "GSAP Error");
-    }
+      // Store ctx for cleanup
+      (sectionRef.current as any).__gsapCtx = ctx;
+    }, 500);
+
+    return () => {
+      clearTimeout(initTimer);
+      if (sectionRef.current && (sectionRef.current as any).__gsapCtx) {
+        (sectionRef.current as any).__gsapCtx.revert();
+      }
+    };
   }, [isReady]);
 
-  if (error) {
-    return <div className="h-screen w-full flex items-center justify-center bg-red-500 text-white text-2xl">{error}</div>;
-  }
-
   return (
-    <section ref={sectionRef} className="relative h-screen w-full bg-background text-foreground overflow-hidden">
-      {/* Background Video Layer */}
+    <div
+      ref={sectionRef}
+      className="relative h-screen w-full bg-background text-foreground overflow-hidden"
+    >
+      {/* Background Video Layer — same structure as HeroVisual */}
       <div ref={videoBgRef} className="absolute inset-0 z-0 w-full h-full will-change-transform">
         <video
           autoPlay
@@ -70,15 +100,15 @@ export function HorizontalScrollSection({ isReady = true }: { isReady?: boolean 
           <source src="/video2.mp4" type="video/mp4" />
           <track kind="captions" />
         </video>
-        {/* Darkening overlay for text contrast (Fades in on scroll) */}
-        <div ref={darkOverlayRef} className="absolute inset-0 bg-black/40" />
+        {/* Darkening overlay (same as HeroVisual) */}
+        <div ref={darkOverlayRef} className="absolute inset-0 bg-black/70 opacity-0" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/10 to-background" />
         
-        {/* Background Pattern */}
+        {/* Dot pattern (same as HeroVisual) */}
         <div className="absolute inset-0 bg-[radial-gradient(circle,_#888_0.5px,_transparent_0.5px)] dark:bg-[radial-gradient(circle,_#444_0.5px,_transparent_0.5px)] opacity-20 [background-size:24px_24px] pointer-events-none" />
       </div>
 
-      {/* Spotlight Effect (Shared) */}
+      {/* Spotlight Effect (same as HeroVisual) */}
       <div className="absolute inset-0 z-[5] pointer-events-none overflow-hidden">
         <Spotlight
           duration={10}
@@ -90,58 +120,62 @@ export function HorizontalScrollSection({ isReady = true }: { isReady?: boolean 
         />
       </div>
 
-      {/* Horizontal Track */}
-      <div ref={trackRef} className="relative z-10 flex h-full w-fit flex-nowrap items-center will-change-transform">
-        
-        {/* Panel 1 */}
-        <div className="w-screen flex-shrink-0 flex items-center justify-center px-6 md:px-24">
-            <div className="max-w-4xl text-center md:text-left md:mr-auto">
-                <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
-                    VERITA / 03
-                </p>
-                <h2 className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] leading-[1.1] text-white uppercase mb-8 drop-shadow-lg"
-                    style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}>
-                    THE NEXT PHASE<br />OF VERIFICATION.
-                </h2>
-                <p className="text-base md:text-xl lg:text-2xl text-gray-200 tracking-wide font-light leading-relaxed drop-shadow-md max-w-2xl mx-auto md:mx-0">
-                    Scroll down to journey horizontally through our advanced process.
-                </p>
-            </div>
-        </div>
-
-        {/* Panel 2 */}
-        <div className="w-screen flex-shrink-0 flex items-center justify-center px-6 md:px-24">
-            <div className="max-w-4xl text-center mx-auto">
-                <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
-                    ANALYSIS
-                </p>
-                <h2 className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] leading-[1.1] text-white uppercase mb-8 drop-shadow-lg"
-                    style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}>
-                    DEEP DATA<br />INSPECTION.
-                </h2>
-                <p className="text-base md:text-xl lg:text-2xl text-gray-200 tracking-wide font-light leading-relaxed drop-shadow-md mx-auto max-w-2xl">
-                    We look beyond the surface. Every transaction is matched across thousands of data points instantly.
-                </p>
-            </div>
-        </div>
-
-        {/* Panel 3 */}
-        <div className="w-screen flex-shrink-0 flex items-center justify-center px-6 md:px-24">
-            <div className="max-w-4xl text-center md:text-right md:ml-auto">
-                <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
-                    RESULTS
-                </p>
-                <h2 className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] leading-[1.1] text-white uppercase mb-8 drop-shadow-lg"
-                    style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}>
-                    CRYSTAL CLEAR<br />OUTCOMES.
-                </h2>
-                <p className="text-base md:text-xl lg:text-2xl text-gray-200 tracking-wide font-light leading-relaxed drop-shadow-md max-w-2xl mx-auto md:ml-auto md:mr-0">
-                    No more ambiguous spreadsheets. Just clear, actionable intelligence ready for your team.
-                </p>
-            </div>
-        </div>
-
+      {/* PANEL 1 — Intro */}
+      <div
+        ref={panel1Ref}
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center w-full px-6 max-w-5xl mx-auto will-change-transform"
+      >
+        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
+          VERITA / 03
+        </p>
+        <h2
+          className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] leading-[1.1] text-foreground uppercase mb-8"
+          style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}
+        >
+          THE NEXT PHASE<br />OF VERIFICATION.
+        </h2>
+        <p className="text-base md:text-xl lg:text-2xl text-muted-foreground tracking-wide font-light leading-relaxed max-w-3xl">
+          Scroll to journey through our advanced reconciliation process.
+        </p>
       </div>
-    </section>
+
+      {/* PANEL 2 — Analysis */}
+      <div
+        ref={panel2Ref}
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center w-full px-6 max-w-5xl mx-auto will-change-transform"
+      >
+        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
+          ANALYSIS
+        </p>
+        <h2
+          className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] leading-[1.1] text-foreground uppercase mb-8"
+          style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}
+        >
+          DEEP DATA<br />INSPECTION.
+        </h2>
+        <p className="text-base md:text-xl lg:text-2xl text-muted-foreground tracking-wide font-light leading-relaxed max-w-3xl">
+          Every transaction is matched across thousands of data points instantly.
+        </p>
+      </div>
+
+      {/* PANEL 3 — Results */}
+      <div
+        ref={panel3Ref}
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center w-full px-6 max-w-5xl mx-auto will-change-transform"
+      >
+        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
+          RESULTS
+        </p>
+        <h2
+          className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] leading-[1.1] text-foreground uppercase mb-8"
+          style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}
+        >
+          CRYSTAL CLEAR<br />OUTCOMES.
+        </h2>
+        <p className="text-base md:text-xl lg:text-2xl text-muted-foreground tracking-wide font-light leading-relaxed max-w-3xl">
+          No more ambiguous spreadsheets. Just clear, actionable intelligence.
+        </p>
+      </div>
+    </div>
   );
 }

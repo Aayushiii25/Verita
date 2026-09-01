@@ -35,6 +35,7 @@ import { HeroVisual } from "@/components/sections/HeroVisual";
 import StatsSection from "@/components/sections/StatsSection";
 import CTASection from "@/components/sections/CTASection";
 import { usePreloadState } from "@/components/ui/arc-preloader-hero";
+import { HorizontalScrollSection } from "@/components/sections/HorizontalScrollSection";
 
 
 // ─── Helpers (Keeping Original Design) ───────────────────────────────────────
@@ -131,6 +132,7 @@ export default function HomePage() {
                 className="relative overflow-x-clip"
             >
                 <HeroVisual isReady={isReadyToAnimate} />
+                <HorizontalScrollSection isReady={isReadyToAnimate} />
 
                 <DeferredMount>
                     <ExpertiseSection />
