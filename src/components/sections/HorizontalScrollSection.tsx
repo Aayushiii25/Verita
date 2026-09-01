@@ -153,12 +153,18 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         ref={panel2Ref}
         className="absolute inset-0 z-10 flex flex-col w-full px-6 pt-24 max-w-6xl mx-auto will-change-transform overflow-y-auto"
       >
-        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md text-center">
-          VERITA / 04 - ML RECORD LINKING
+        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-2 drop-shadow-md text-center">
+          VERITA / 04
         </p>
+        <h2
+          className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] leading-[1.1] text-foreground uppercase mb-6 text-center"
+          style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}
+        >
+          ML RECORD LINKING MODEL
+        </h2>
         
         {/* Navigation to Graph */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-6">
             <button 
             onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: 'smooth' })}
             className="px-6 py-2 bg-primary/20 hover:bg-primary/40 text-primary-foreground border border-primary/50 font-semibold rounded-full transition-colors flex items-center gap-2 text-sm z-50"
@@ -178,9 +184,15 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         ref={panel3Ref}
         className="absolute inset-0 z-10 flex flex-col w-full px-6 pt-24 max-w-6xl mx-auto will-change-transform overflow-y-auto"
       >
-        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md text-center">
-          VERITA / 05 - TEMPORAL FINANCIAL GRAPH
+        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-2 drop-shadow-md text-center">
+          VERITA / 05
         </p>
+        <h2
+          className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] leading-[1.1] text-foreground uppercase mb-6 text-center"
+          style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}
+        >
+          TEMPORAL FINANCIAL GRAPH
+        </h2>
         <div className="bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-border mt-4 mb-24">
             <FinancialGraph />
         </div>
