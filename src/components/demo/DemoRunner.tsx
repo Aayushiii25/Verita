@@ -261,20 +261,6 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                 )}
             </AnimatePresence>
 
-            {/* PHASE E: Graph */}
-            <AnimatePresence>
-                {phase === 'RESULTS' && (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="space-y-4 pt-8 border-t border-gray-200"
-                    >
-                        <h3 className="text-sm text-gray-500 font-mono uppercase tracking-widest">Step 4: AI Relationship Graph</h3>
-                        <FinancialGraph />
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
             {/* Restart */}
             {phase === 'RESULTS' && (
                 <div className="pt-12 flex justify-center">

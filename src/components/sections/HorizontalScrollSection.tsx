@@ -4,6 +4,8 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Spotlight } from "@/components/ui/spotlight-new";
+import DemoRunner from "@/components/demo/DemoRunner";
+import FinancialGraph from "@/components/demo/FinancialGraph";
 
 /**
  * HorizontalScrollSection
@@ -139,42 +141,30 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         </p>
       </div>
 
-      {/* PANEL 2 — Analysis */}
+      {/* PANEL 2 — ML Record Linking */}
       <div
         ref={panel2Ref}
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center w-full px-6 max-w-5xl mx-auto will-change-transform"
+        className="absolute inset-0 z-10 flex flex-col w-full px-6 pt-24 max-w-6xl mx-auto will-change-transform overflow-y-auto"
       >
-        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
-          ANALYSIS
+        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md text-center">
+          VERITA / 04 - ML RECORD LINKING
         </p>
-        <h2
-          className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] leading-[1.1] text-foreground uppercase mb-8"
-          style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}
-        >
-          DEEP DATA<br />INSPECTION.
-        </h2>
-        <p className="text-base md:text-xl lg:text-2xl text-muted-foreground tracking-wide font-light leading-relaxed max-w-3xl">
-          Every transaction is matched across thousands of data points instantly.
-        </p>
+        <div className="bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-border mt-4 mb-24">
+            <DemoRunner onReset={() => window.location.reload()} />
+        </div>
       </div>
 
-      {/* PANEL 3 — Results */}
+      {/* PANEL 3 — Temporal Graph */}
       <div
         ref={panel3Ref}
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center w-full px-6 max-w-5xl mx-auto will-change-transform"
+        className="absolute inset-0 z-10 flex flex-col w-full px-6 pt-24 max-w-6xl mx-auto will-change-transform overflow-y-auto"
       >
-        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
-          RESULTS
+        <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md text-center">
+          VERITA / 05 - TEMPORAL FINANCIAL GRAPH
         </p>
-        <h2
-          className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] leading-[1.1] text-foreground uppercase mb-8"
-          style={{ fontFamily: "'PP Neue Montreal', 'Helvetica Neue', Inter, sans-serif" }}
-        >
-          CRYSTAL CLEAR<br />OUTCOMES.
-        </h2>
-        <p className="text-base md:text-xl lg:text-2xl text-muted-foreground tracking-wide font-light leading-relaxed max-w-3xl">
-          No more ambiguous spreadsheets. Just clear, actionable intelligence.
-        </p>
+        <div className="bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-border mt-4 mb-24">
+            <FinancialGraph />
+        </div>
       </div>
     </div>
   );
