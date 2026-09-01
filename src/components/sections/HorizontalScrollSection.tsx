@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Spotlight } from "@/components/ui/spotlight-new";
 import DemoRunner from "@/components/demo/DemoRunner";
 import FinancialGraph from "@/components/demo/FinancialGraph";
+import { useLenis } from 'lenis/react';
 
 /**
  * HorizontalScrollSection
@@ -20,6 +21,7 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoBgRef = useRef<HTMLDivElement>(null);
   const darkOverlayRef = useRef<HTMLDivElement>(null);
+  const lenis = useLenis();
 
   // Panel refs
   const panel1Ref = useRef<HTMLDivElement>(null);
@@ -140,7 +142,13 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
           Scroll down or click the button below to journey through our advanced reconciliation process.
         </p>
         <button 
-          onClick={() => window.scrollBy({ top: window.innerHeight * 1.2, behavior: 'smooth' })}
+          onClick={() => {
+            if (lenis) {
+              lenis.scrollTo(window.scrollY + window.innerHeight * 1.5);
+            } else {
+              window.scrollBy({ top: window.innerHeight * 1.5, behavior: 'smooth' });
+            }
+          }}
           className="px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-full hover:scale-105 transition-transform flex items-center gap-2"
         >
           View ML Record Linking Model
@@ -166,7 +174,13 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         {/* Navigation to Graph */}
         <div className="flex justify-center mb-6">
             <button 
-            onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: 'smooth' })}
+            onClick={() => {
+              if (lenis) {
+                lenis.scrollTo(window.scrollY + window.innerHeight * 1.5);
+              } else {
+                window.scrollBy({ top: window.innerHeight * 1.5, behavior: 'smooth' });
+              }
+            }}
             className="px-6 py-2 bg-primary/20 hover:bg-primary/40 text-primary-foreground border border-primary/50 font-semibold rounded-full transition-colors flex items-center gap-2 text-sm z-50"
             >
             Proceed to Temporal Financial Graph
