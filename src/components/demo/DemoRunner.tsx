@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CustomButton } from '@/components/ui/CustomButton';
+import FinancialGraph from './FinancialGraph';
 
 type Phase = 'INIT' | 'FEEDING' | 'DETECTING' | 'RECONCILING' | 'RESULTS';
 
@@ -45,9 +46,9 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
 
                 await new Promise(r => setTimeout(r, 1000));
 
-                // Fetch reconciliation data
+                // Fetch reconciliation data from real backend
                 setPhase('RECONCILING');
-                const resRecon = await fetch('/api/demo/reconcile', { method: 'POST' });
+                const resRecon = await fetch('http://localhost:8000/api/reconcile', { method: 'POST' });
                 const reconData = await resRecon.json();
                 setReconciliationData(reconData);
                 
@@ -178,7 +179,12 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                                     <span>{item.settlement_id}</span>
                                                     <span>{item.bank_id}</span>
                                                 </div>
-                                                <p className="text-gray-700">{item.reason}</p>
+                                                <div className="mb-2">
+                                                    <span className="inline-block bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono border border-green-200">
+                                                        AI CONFIDENCE: {(item.probability * 100).toFixed(1)}%
+                                                    </span>
+                                                </div>
+                                                <p className="text-gray-700">{item.reason || 'Matched by ML model'}</p>
                                             </div>
                                         ))}
                                         {reconCounts.MATCHED > 3 && (
@@ -203,7 +209,12 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                                 <div className="flex justify-between text-gray-400 text-xs mb-2 font-mono">
                                                     <span>{item.invoice_ids.join(', ')}</span>
                                                 </div>
-                                                <p className="text-gray-700">{item.reason}</p>
+                                                <div className="mb-2">
+                                                    <span className="inline-block bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono border border-yellow-200">
+                                                        AI CONFIDENCE: {(item.probability * 100).toFixed(1)}%
+                                                    </span>
+                                                </div>
+                                                <p className="text-gray-700">{item.reason || 'Flagged for review by ML model'}</p>
                                             </div>
                                         ))}
                                         {reconCounts.REVIEW > 3 && (
@@ -228,7 +239,12 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                                                 <div className="flex justify-between text-gray-400 text-xs mb-2 font-mono">
                                                     <span>{item.bank_id || item.invoice_ids.join(', ')}</span>
                                                 </div>
-                                                <p className="text-gray-700">{item.reason}</p>
+                                                <div className="mb-2">
+                                                    <span className="inline-block bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono border border-red-200">
+                                                        AI CONFIDENCE: {(item.probability * 100).toFixed(1)}%
+                                                    </span>
+                                                </div>
+                                                <p className="text-gray-700">{item.reason || 'Exception identified by ML model'}</p>
                                             </div>
                                         ))}
                                         {reconCounts.EXCEPTIONS > 3 && (
@@ -241,6 +257,20 @@ export default function DemoRunner({ onReset }: { onReset: () => void }) {
                             </div>
                         </div>
 
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* PHASE E: Graph */}
+            <AnimatePresence>
+                {phase === 'RESULTS' && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="space-y-4 pt-8 border-t border-gray-200"
+                    >
+                        <h3 className="text-sm text-gray-500 font-mono uppercase tracking-widest">Step 4: AI Relationship Graph</h3>
+                        <FinancialGraph />
                     </motion.div>
                 )}
             </AnimatePresence>
