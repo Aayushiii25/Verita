@@ -136,9 +136,16 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         >
           THE NEXT PHASE<br />OF VERIFICATION.
         </h2>
-        <p className="text-base md:text-xl lg:text-2xl text-muted-foreground tracking-wide font-light leading-relaxed max-w-3xl">
-          Scroll to journey through our advanced reconciliation process.
+        <p className="text-base md:text-xl lg:text-2xl text-muted-foreground tracking-wide font-light leading-relaxed max-w-3xl mb-8">
+          Scroll down or click the button below to journey through our advanced reconciliation process.
         </p>
+        <button 
+          onClick={() => window.scrollBy({ top: window.innerHeight * 1.2, behavior: 'smooth' })}
+          className="px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-full hover:scale-105 transition-transform flex items-center gap-2"
+        >
+          View ML Record Linking Model
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
       </div>
 
       {/* PANEL 2 — ML Record Linking */}
@@ -149,7 +156,19 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md text-center">
           VERITA / 04 - ML RECORD LINKING
         </p>
-        <div className="bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-border mt-4 mb-24">
+        
+        {/* Navigation to Graph */}
+        <div className="flex justify-center mb-4">
+            <button 
+            onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: 'smooth' })}
+            className="px-6 py-2 bg-primary/20 hover:bg-primary/40 text-primary-foreground border border-primary/50 font-semibold rounded-full transition-colors flex items-center gap-2 text-sm z-50"
+            >
+            Proceed to Temporal Financial Graph
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+        </div>
+
+        <div className="bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-border mb-24 relative z-40">
             <DemoRunner onReset={() => window.location.reload()} />
         </div>
       </div>
