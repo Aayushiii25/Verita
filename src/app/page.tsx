@@ -11,6 +11,7 @@ import { AdvancedFeaturesSection } from '@/components/sections/AdvancedFeaturesS
 import { FinanceUploadMount } from '@/components/finance/FinanceUploadMount';
 import { UserRunResultsOverlay } from '@/components/finance/UserRunResultsOverlay';
 import { FinanceControllerChat } from '@/components/finance/FinanceControllerChat';
+import { AdvancedPanelScrollEnhancer } from '@/components/finance/AdvancedPanelScrollEnhancer';
 import { VeritaFAQ } from '@/components/sections/VeritaFAQ';
 import { usePreloadState } from '@/components/ui/arc-preloader-hero';
 
@@ -54,6 +55,7 @@ export default function HomePage() {
         <UserRunResultsOverlay kind="early" />
         <div id="verita-advanced-features">
           <AdvancedFeaturesSection isReady={isReadyToAnimate} />
+          <AdvancedPanelScrollEnhancer />
         </div>
         <UserRunResultsOverlay kind="advanced" />
         <FinanceControllerChat />
