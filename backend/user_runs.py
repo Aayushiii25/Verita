@@ -1,6 +1,7 @@
 """Per-upload finance run storage and multimodal ingestion."""
 from __future__ import annotations
 
+import io
 import json
 import os
 import uuid
@@ -14,12 +15,7 @@ from app.source_detection import detect_source
 RUN_ROOT = Path(os.environ.get("VERITA_RUNS_DIR", Path(__file__).resolve().parent / "runs"))
 RUN_ROOT.mkdir(parents=True, exist_ok=True)
 
-SOURCE_FILES = {
-    "BANK": "bank_transactions.csv",
-    "INVOICE": "invoices.csv",
-    "SETTLEMENT": "settlements.csv",
-    "LEDGER": "ledger_entries.csv",
-}
+SOURCE_FILES = {"BANK": "bank_transactions.csv", "INVOICE": "invoices.csv", "SETTLEMENT": "settlements.csv", "LEDGER": "ledger_entries.csv"}
 
 
 def _run_path(run_id: str) -> Path:
@@ -47,14 +43,10 @@ def _write_source(run_dir: Path, source: str, frame: pd.DataFrame) -> int:
 
 
 def _extract_image_rows(data: bytes, mime_type: str) -> Dict[str, Any]:
-    """Use Gemini Vision when configured to turn a table screenshot into rows."""
+    """Use Gemini Vision to turn a table screenshot into canonical finance rows."""
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        raise RuntimeError(
-            "Screenshot ingestion needs GEMINI_API_KEY on the FastAPI server. "
-            "CSV uploads do not require an AI key."
-        )
-
+        raise RuntimeError("Screenshot ingestion needs GEMINI_API_KEY on the FastAPI server. CSV uploads do not require an AI key.")
     try:
         from google import genai
         from google.genai import types
@@ -73,7 +65,7 @@ def _extract_image_rows(data: bytes, mime_type: str) -> Dict[str, Any]:
     prompt = """
 You are the ingestion layer of a finance reconciliation system.
 Read the table in this screenshot. Identify whether it is BANK, INVOICE, SETTLEMENT, or LEDGER data.
-Return every visible data row as JSON. Map columns to the canonical schema below; do not invent values.
+Return every visible data row as JSON. Map columns to the canonical schema below; never invent values.
 If a field is not visible, use an empty string. Preserve IDs, dates, references and amounts exactly as shown.
 Canonical columns:
 BANK: transaction_id, transaction_date, value_date, description, reference_number, debit, credit, balance, counterparty_name
@@ -85,15 +77,8 @@ Do not fabricate rows outside the visible table.
     client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
         model=os.environ.get("GEMINI_VISION_MODEL", "gemini-3.7-flash"),
-        contents=[
-            types.Part.from_text(text=prompt),
-            types.Part.from_bytes(data=data, mime_type=mime_type),
-        ],
-        config=types.GenerateContentConfig(
-            response_mime_type="application/json",
-            response_schema=schema,
-            temperature=0,
-        ),
+        contents=[types.Part.from_text(text=prompt), types.Part.from_bytes(data=data, mime_type=mime_type)],
+        config=types.GenerateContentConfig(response_mime_type="application/json", response_schema=schema, temperature=0),
     )
     return json.loads(response.text)
 
@@ -109,58 +94,29 @@ def ingest_uploads(files: Iterable[Any]) -> Dict[str, Any]:
         content_type = getattr(upload, "content_type", "") or ""
         data = upload.file.read()
         suffix = Path(filename).suffix.lower()
-
         try:
             if suffix == ".csv" or content_type in {"text/csv", "application/csv"}:
-                frame = pd.read_csv(pd.io.common.BytesIO(data), dtype=str).fillna("")
+                frame = pd.read_csv(io.BytesIO(data), dtype=str).fillna("")
                 detection = detect_source(frame, filename)
                 if not detection.source or detection.confidence < 0.5:
-                    raise ValueError(
-                        "Could not identify this CSV. Use one of the four source templates shown in the upload guide."
-                    )
+                    raise ValueError("Could not identify this CSV. Use one of the four source templates shown in the upload guide.")
                 count = _write_source(run_dir, detection.source, frame)
-                sources[detection.source] = {
-                    "source": detection.source,
-                    "files": sources.get(detection.source, {}).get("files", []) + [filename],
-                    "records": count,
-                    "confidence": detection.confidence,
-                    "method": "schema",
-                }
+                sources[detection.source] = {"source": detection.source, "files": sources.get(detection.source, {}).get("files", []) + [filename], "records": count, "confidence": detection.confidence, "method": "schema"}
             elif content_type.startswith("image/") or suffix in {".png", ".jpg", ".jpeg", ".webp"}:
                 parsed = _extract_image_rows(data, content_type or "image/png")
                 source = parsed["source"]
                 rows = parsed.get("rows", [])
                 if not rows:
                     raise ValueError("No table rows were detected in the screenshot.")
-                frame = pd.DataFrame(rows).fillna("")
-                count = _write_source(run_dir, source, frame)
-                sources[source] = {
-                    "source": source,
-                    "files": sources.get(source, {}).get("files", []) + [filename],
-                    "records": count,
-                    "confidence": 1.0,
-                    "method": "gemini-vision",
-                    "notes": parsed.get("notes", ""),
-                }
+                count = _write_source(run_dir, source, pd.DataFrame(rows).fillna(""))
+                sources[source] = {"source": source, "files": sources.get(source, {}).get("files", []) + [filename], "records": count, "confidence": 1.0, "method": "gemini-vision", "notes": parsed.get("notes", "")}
             else:
                 raise ValueError("Unsupported file type. Upload CSV, PNG, JPG, JPEG, or WEBP.")
-        except Exception as exc:  # surface per-file errors without losing successful uploads
+        except Exception as exc:
             errors.append({"file": filename, "error": str(exc)})
 
-    total_records = 0
-    for filename in SOURCE_FILES.values():
-        path = run_dir / filename
-        if path.exists():
-            total_records += max(0, len(pd.read_csv(path, dtype=str)))
-
-    manifest = {
-        "run_id": run_id,
-        "sources": list(sources.values()),
-        "missing_sources": [s for s in SOURCE_FILES if s not in sources],
-        "records_ingested": total_records,
-        "errors": errors,
-        "status": "ready" if sources and not errors else ("ready_with_warnings" if sources else "failed"),
-    }
+    total_records = sum(len(pd.read_csv(run_dir / filename, dtype=str)) for filename in SOURCE_FILES.values() if (run_dir / filename).exists())
+    manifest = {"run_id": run_id, "sources": list(sources.values()), "missing_sources": [s for s in SOURCE_FILES if s not in sources], "records_ingested": total_records, "errors": errors, "status": "ready" if sources and not errors else ("ready_with_warnings" if sources else "failed")}
     (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return manifest
 
@@ -169,12 +125,7 @@ def load_run_records(run_id: str):
     run_dir = _run_path(run_id)
     if not run_dir.exists():
         raise FileNotFoundError(run_id)
-
-    result = {}
-    for source, filename in SOURCE_FILES.items():
-        path = run_dir / filename
-        result[source] = pd.read_csv(path, dtype=str).fillna("").to_dict(orient="records") if path.exists() else []
-    return result
+    return {source: pd.read_csv(run_dir / filename, dtype=str).fillna("").to_dict(orient="records") if (run_dir / filename).exists() else [] for source, filename in SOURCE_FILES.items()}
 
 
 def get_manifest(run_id: str) -> Dict[str, Any]:
