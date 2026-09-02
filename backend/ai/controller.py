@@ -25,7 +25,7 @@ def answer_controller(question: str, bank: list[dict[str, Any]], settlements: li
         }
 
     client = genai.Client(api_key=api_key)
-    model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    model = os.getenv("GEMINI_MODEL", "gemini-3.7-flash")
 
     matched = sum(1 for x in matches if x.get("status") == "matched")
     review = sum(1 for x in matches if x.get("status") == "review")
