@@ -12,7 +12,7 @@ export function FinanceUploadMount() {
       const target = event.target as HTMLElement | null;
       const button = target?.closest("button");
       if (!button) return;
-      if (button.textContent?.trim() !== "Upload") return;
+      if (!button.textContent?.trim().startsWith("Upload")) return;
       event.preventDefault();
       event.stopPropagation();
       setOpen(true);
