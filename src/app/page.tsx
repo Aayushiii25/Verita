@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { LoadingScreen } from '@/components/layout';
@@ -18,6 +16,7 @@ import ExpertiseSection from '@/components/sections/ExpertiseSection';
 import StatsSection from '@/components/sections/StatsSection';
 import CTASection from '@/components/sections/CTASection';
 import { FinanceUploadMount } from '@/components/finance/FinanceUploadMount';
+import { UserRunResultsOverlay } from '@/components/finance/UserRunResultsOverlay';
 import { usePreloadState } from '@/components/ui/arc-preloader-hero';
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
@@ -27,10 +26,7 @@ const MetricCTAHijack = () => (
     <StatsSection showOnly="top" />
     <section className="relative">
       <div className="sticky top-0 z-0 overflow-hidden"><StatsSection showOnly="bottom" /></div>
-      <div className="relative z-20 bg-background dark:bg-black">
-        <div className="absolute top-0 left-0 w-full h-10 dark:shadow-[0_-50px_150px_rgba(0,0,0,0.8)] -z-10" />
-        <div className="h-[10vh]" /><CTASection /><div className="h-20" />
-      </div>
+      <div className="relative z-20 bg-background dark:bg-black"><div className="absolute top-0 left-0 w-full h-10 dark:shadow-[0_-50px_150px_rgba(0,0,0,0.8)] -z-10" /><div className="h-[10vh]" /><CTASection /><div className="h-20" /></div>
     </section>
   </>
 );
@@ -59,21 +55,15 @@ export default function HomePage() {
   return (
     <>
       {isLoading && <LoadingScreen onComplete={handleLoadingComplete} onExitStart={() => setIsInitialLoadingExit(true)} duration={2500} />}
-      <motion.main
-        initial={skipAnimation ? false : { opacity: 0, y: 40 }}
-        animate={skipAnimation ? { opacity: 1, y: 0 } : (isReadyToAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 })}
-        transition={{ duration: skipAnimation ? 0 : 1.4, ease: skipAnimation ? 'linear' : [0.16, 1, 0.3, 1], opacity: { duration: skipAnimation ? 0 : 0.8 } }}
-        className="relative overflow-x-clip"
-      >
+      <motion.main initial={skipAnimation ? false : { opacity: 0, y: 40 }} animate={skipAnimation ? { opacity: 1, y: 0 } : (isReadyToAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 })} transition={{ duration: skipAnimation ? 0 : 1.4, ease: skipAnimation ? 'linear' : [0.16, 1, 0.3, 1], opacity: { duration: skipAnimation ? 0 : 0.8 } }} className="relative overflow-x-clip">
         <HeroVisual isReady={isReadyToAnimate} />
         <FinanceUploadMount />
-        <HorizontalScrollSection isReady={isReadyToAnimate} />
+        <div id="verita-early-run-range"><HorizontalScrollSection isReady={isReadyToAnimate} /></div>
+        <UserRunResultsOverlay kind="early" />
         <div id="verita-advanced-features"><AdvancedFeaturesSection isReady={isReadyToAnimate} /></div>
+        <UserRunResultsOverlay kind="advanced" />
         <BackendAIOverlay isReady={isReadyToAnimate} />
-        <DeferredMount>
-          <ExpertiseSection /><AboutSection /><MetricCTAHijack />
-          <SocialCorner className="fixed bottom-12 right-12 z-[30]" />
-        </DeferredMount>
+        <DeferredMount><ExpertiseSection /><AboutSection /><MetricCTAHijack /><SocialCorner className="fixed bottom-12 right-12 z-[30]" /></DeferredMount>
       </motion.main>
     </>
   );
