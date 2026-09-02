@@ -1,42 +1,27 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { motion, useScroll, useTransform, AnimatePresence, useSpring, useMotionValue, useMotionTemplate } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useIsMobile } from "@/hooks/useIsMobile";
-
-import { Sparkles, Mail, ArrowRight, ArrowDown } from 'lucide-react';
 import { LoadingScreen } from '@/components/layout';
-import { TextPressure } from '@/components/ui/TextPressure';
-import { portfolioData } from '@/data/portfolio';
-import { cn } from "@/lib/utils";
 import { SocialCorner } from '@/components/layout/SocialCorner';
 import { DeferredMount } from '@/components/ui/DeferredMount';
+import { HeroVisual } from '@/components/sections/HeroVisual';
+import { HorizontalScrollSection } from '@/components/sections/HorizontalScrollSection';
+import { AdvancedFeaturesSection } from '@/components/sections/AdvancedFeaturesSection';
+import { BackendAIOverlay } from '@/components/sections/BackendAIOverlay';
+import AboutSection from '@/components/sections/AboutSection';
+import ExpertiseSection from '@/components/sections/ExpertiseSection';
+import StatsSection from '@/components/sections/StatsSection';
+import CTASection from '@/components/sections/CTASection';
+import { usePreloadState } from '@/components/ui/arc-preloader-hero';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 }
-
-const Hyperspeed = dynamic(() => import('@/components/ui/Hyperspeed'), { ssr: false });
-const { hyperspeedPresets } = require('@/components/ui/Hyperspeed');
-
-const Scene3D = dynamic(() => import('@/components/three/Scene3D').then(mod => ({ default: mod.Scene3D })), {
-    ssr: false,
-    loading: () => null
-});
-
-import AboutSection from "@/components/sections/AboutSection";
-import ExpertiseSection from "@/components/sections/ExpertiseSection";
-import { HeroVisual } from "@/components/sections/HeroVisual";
-import StatsSection from "@/components/sections/StatsSection";
-import CTASection from "@/components/sections/CTASection";
-import { usePreloadState } from "@/components/ui/arc-preloader-hero";
-import { HorizontalScrollSection } from "@/components/sections/HorizontalScrollSection";
-import { AdvancedFeaturesSection } from "@/components/sections/AdvancedFeaturesSection";
 
 const MetricCTAHijack = () => {
     return (
@@ -84,7 +69,7 @@ export default function HomePage() {
         };
     }, []);
 
-    const isReadyToAnimate = isLoading ? isInitialLoadingExit : (phase === "reveal" || phase === "done");
+    const isReadyToAnimate = isLoading ? isInitialLoadingExit : (phase === 'reveal' || phase === 'done');
 
     useEffect(() => {
         if (isReadyToAnimate) {
@@ -108,12 +93,15 @@ export default function HomePage() {
             <motion.main
                 initial={skipAnimation ? false : { opacity: 0, y: 40 }}
                 animate={skipAnimation ? { opacity: 1, y: 0 } : (isReadyToAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 })}
-                transition={{ duration: skipAnimation ? 0 : 1.4, ease: skipAnimation ? "linear" : [0.16, 1, 0.3, 1], opacity: { duration: skipAnimation ? 0 : 0.8 } }}
+                transition={{ duration: skipAnimation ? 0 : 1.4, ease: skipAnimation ? 'linear' : [0.16, 1, 0.3, 1], opacity: { duration: skipAnimation ? 0 : 0.8 } }}
                 className="relative overflow-x-clip"
             >
                 <HeroVisual isReady={isReadyToAnimate} />
                 <HorizontalScrollSection isReady={isReadyToAnimate} />
-                <AdvancedFeaturesSection isReady={isReadyToAnimate} />
+                <div id="verita-advanced-features">
+                    <AdvancedFeaturesSection isReady={isReadyToAnimate} />
+                </div>
+                <BackendAIOverlay isReady={isReadyToAnimate} />
                 <DeferredMount>
                     <ExpertiseSection />
                     <AboutSection />
