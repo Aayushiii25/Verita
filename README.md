@@ -1,172 +1,494 @@
-<div align="center">
+# Verita — AI Finance Controller
 
-<img src="public/Arfazrll_light.svg" alt="Project Logo" width="80" height="80" />
+> **Razorpay Buildathon · Track 04**  
+> **Run the books and the cash position.**
 
-# Syahril Arfian Almazril — Technical Portfolio
+Verita is an AI-powered finance operations controller that closes a reconciliation loop across **50+ synthetic financial records**. It combines deterministic reconciliation, ML-based record linking, exception detection, risk analysis, impact propagation, an audit-ready decision trace, and a grounded Finance Controller LLM.
 
-### Engineering AI Systems, Scalable Software, and Data Architectures
-
-[![Next.js](https://img.shields.io/badge/Next.js-16.1.6-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Three.js](https://img.shields.io/badge/Three.js-0.170-000000?style=for-the-badge&logo=threedotjs&logoColor=white)](https://threejs.org/)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
-
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Portfolio-6366f1?style=for-the-badge)](https://syahrilarfianalmazril.vercel.app)
-[![GitHub](https://img.shields.io/badge/GitHub-Arfazrll-181717?style=for-the-badge&logo=github)](https://github.com/Arfazrll)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/syahril-arfian-almazril)
+The goal is not to show one perfect match. **Verita reports what it matched, what it could not resolve, and where human review is still required.**
 
 ---
 
-![GitHub last commit](https://img.shields.io/github/last-commit/Arfazrll/PersonalBlog?style=flat-square&color=6366f1)
-![GitHub repo size](https://img.shields.io/github/repo-size/Arfazrll/PersonalBlog?style=flat-square&color=a855f7)
-![GitHub stars](https://img.shields.io/github/stars/Arfazrll/PersonalBlog?style=flat-square&color=f59e0b)
-![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)
+## 🎯 Track 04 — AI Finance Controller
 
-</div>
+### The problem
 
----
+Finance operations still rely heavily on manual reconciliation across disconnected sources such as bank transactions, invoices, settlements, and ledger entries.
 
-## Executive Summary
+That creates three recurring problems:
 
-A production-grade, highly interactive portfolio application engineered to showcase technical expertise across Artificial Intelligence, Data Science, and Modern Software Engineering. Moving beyond traditional static documentation, this platform delivers an immersive, high-performance user experience powered by WebGL physics simulations, real-time data integrations, and an autonomous AI chatbot assistant.
+- matching records across systems is slow;
+- ambiguous transactions require manual investigation;
+- teams need to understand the financial impact of unresolved exceptions.
 
----
+### The Verita approach
 
-## System Architecture & Technologies
-
-The repository is built on a modern, decoupled architecture designed for maximal performance, scalability, and maintainability.
-
-### Core Framework
-- **Next.js 16 (App Router):** Leverages server-side rendering (SSR), static site generation (SSG), and advanced caching mechanisms for optimal content delivery.
-- **React 19 & TypeScript:** Enforces strict type safety and modern reactive paradigms across 50+ custom UI components.
-
-### 3D Graphics & Physics Simulation
-- **Three.js & React Three Fiber (R3F):** Powers the core WebGL rendering engine.
-- **Rapier Physics:** Integrates real-time, deterministic physics simulations (e.g., interactive 3D Lanyard and structural models).
-- **Custom GLSL Shaders:** Utilized for bespoke background elements, including the Hyperspeed and warp effects.
-
-### UI/UX Choreography
-- **Framer Motion & GSAP:** Drives complex, timeline-based choreographies, micro-interactions, and fluid page transitions.
-- **Tailwind CSS & Shadcn UI:** Provides a scalable, utility-first design system utilizing robust Radix UI accessibility primitives.
-- **Lenis:** Implements smooth, premium scrolling dynamics.
-
-### System Integrations & APIs
-- **Dual-LLM AI Chatbot Architecture:** Integrates Groq (LLaMA 3.1) as the primary provider with an automatic failover to Google Gemini (1.5 Flash), utilizing retrieval-augmented generation context mapped directly from `portfolio.ts`.
-- **GraphQL & REST Pipelines:** Consumes GitHub GraphQL for repository statistics and WakaTime API for real-time code telemetry.
-- **Next-Intl:** Provides a complete bilingual experience (EN/ID) driven by client-side browser header detection.
-
----
-
-## Project Structure
+Verita treats reconciliation as an end-to-end finance-ops loop:
 
 ```text
-PersonalBlog/
-├── src/
-│   ├── app/                          # Next.js 16 App Router Entry Points
-│   │   ├── api/                      # Backend API Routes (Chatbot, GitHub, WakaTime)
-│   │   ├── projects/                 # Comprehensive Project Directory
-│   │   ├── experience/               # Career Timeline and Analytics
-│   │   ├── skills/                   # Technical Skill Radar
-│   │   ├── resume/                   # Custom PDF Rendering Engine (react-pdf)
-│   │   └── blog/                     # MDX/Markdown Article Renderer
-│   ├── components/
-│   │   ├── three/                    # WebGL & R3F Components (Lanyard, Splash)
-│   │   ├── sections/                 # Primary Page Layout Structures
-│   │   └── ui/                       # 50+ Custom Shadcn & Animated Primitives
-│   ├── data/
-│   │   └── portfolio.ts              # Centralized JSON/TS Data Store
-│   ├── hooks/                        # Custom React Hooks (Performance, Intersection)
-│   └── styles/                       # Global CSS & Tailwind Directives
-├── public/                           # Static Assets (Images, 3D Models, PDFs)
-├── next.config.ts                    # Next.js Optimization Configuration
-└── tailwind.config.ts                # Custom Design System Configurations
+Bank Transactions ─┐
+Invoices ───────────┤
+Settlements ────────┼──> Reconciliation ──> ML Matching ──> Exceptions
+Ledger Entries ────┘                              │              │
+                                                  ↓              ↓
+                                           Confidence/Risk   Impact Analysis
+                                                  │              │
+                                                  └──────┬───────┘
+                                                         ↓
+                                                Finance Controller
+                                                         ↓
+                                              Decision + Explanation
 ```
 
 ---
 
-## Key Features
+## 🚀 What Verita Does
 
-### 1. Interactive 3D Environments
-Implements hardware-accelerated 3D models using `@react-three/drei` and `@react-three/fiber`. Features include a physics-simulated identification badge that responds to cursor velocity and window constraints in real time.
+### 1. Multi-source reconciliation
 
-### 2. Autonomous Portfolio Chatbot
-An intelligent conversational agent deployed via the `/api/chat` route. The system builds a dynamic context window from the static `portfolio.ts` database and processes natural language queries using a redundant Dual-LLM infrastructure.
+Accepts finance records from multiple sources and normalizes them into a common structure.
 
-### 3. Real-Time Telemetry
-Dashboards across the platform retrieve and display real-time engineering metrics, utilizing authenticated GraphQL requests to GitHub (activity heatmaps, language breakdown) and WakaTime (coding hours, IDE preferences).
+Supported source categories:
 
-### 4. Interactive PDF Document Viewer
-A custom-built document rendering engine utilizing `react-pdf`, allowing users to zoom, rotate, search, and download the resume natively within the browser application without relying on external plugins.
+- Bank transactions
+- Invoices
+- Settlements
+- Ledger entries
 
-### 5. Performance Diagnostics
-The application implements a `usePerformance` hook to evaluate client hardware capabilities in real time, automatically disabling intensive WebGL shaders and complex GSAP animations on low-power or mobile devices to preserve battery life and maintain stable framerates.
+Users can upload their own dataset and receive a unique run ID so results remain isolated to that dataset.
+
+### 2. Deterministic reconciliation baseline
+
+Verita first establishes a transparent baseline using accounting-relevant fields such as:
+
+- amount
+- currency
+- date
+- reference ID
+- counterparty
+- invoice ID
+
+This gives the system a boring-but-correct foundation before introducing probabilistic matching.
+
+### 3. ML record linking
+
+The ML layer scores candidate relationships using multiple signals rather than relying on a single exact match.
+
+The matching model considers:
+
+```text
+Amount similarity
++ Date proximity
++ Reference similarity
++ Counterparty similarity
++ Currency match
+                    ↓
+             Match probability
+```
+
+This allows Verita to distinguish high-confidence matches from records that need review.
+
+### 4. Exception detection
+
+Every reconciliation result is classified into an operational state:
+
+- **Matched** — high-confidence reconciliation
+- **Review** — ambiguous result requiring human validation
+- **Exception** — unresolved relationship or meaningful discrepancy
+
+The system surfaces exceptions instead of hiding them behind a single accuracy number.
+
+### 5. Confidence + risk engine
+
+Verita combines model confidence with financial exposure to prioritize operational risk.
+
+For an exception, the system can surface:
+
+- match probability
+- contributing signals
+- risk level
+- monetary exposure
+- likely downstream impact
+- counterfactual reasoning
+
+### 6. Break propagation / impact analysis
+
+An unresolved reconciliation break can affect more than one record. Verita maps relationships between financial entities and estimates the affected financial surface so operators can prioritize the most consequential breaks.
+
+### 7. Finance Controller LLM
+
+The built-in Finance Controller provides grounded natural-language analysis over the current reconciliation run.
+
+Example questions:
+
+> Which transactions need review?
+
+> Why was this transaction classified as an exception?
+
+> What is the largest unresolved exposure?
+
+> Which invoices appear to be missing a settlement?
+
+> Summarize the current reconciliation status.
+
+The controller is instructed to use only the supplied dataset and reconciliation evidence, distinguish inference from confirmed source data, and identify missing evidence rather than inventing accounting facts.
+
+### 8. Audit-ready decision trace
+
+Verita preserves the reasoning behind operational decisions, including the evidence used, confidence signals, exception state, and resulting action recommendation.
+
+### 9. Batch reporting
+
+The final view summarizes the entire run rather than presenting a cherry-picked success.
+
+The report surfaces:
+
+- total records processed
+- matched records
+- records requiring review
+- unresolved exceptions
+- match rate
+- monetary exposure
+- confidence/risk distribution
+- benchmark information where ground truth exists
 
 ---
 
-## Local Development Setup
+## 📊 The Benchmark Philosophy
+
+The buildathon requirement is not simply:
+
+> "Look, the AI matched one transaction!"
+
+Verita is designed around **throughput + measured accuracy + an honest exception list**.
+
+For synthetic benchmark data with known ground truth, the system can report measured performance such as match accuracy and reconciliation outcomes.
+
+For user-uploaded data where ground truth is unavailable, Verita explicitly avoids fabricating an accuracy number. Instead, it reports the observed reconciliation outcomes and tells the operator when benchmark ground truth is missing.
+
+**A system that admits uncertainty is more useful than one that invents certainty.**
+
+---
+
+## 🧠 Architecture
+
+```text
+                         ┌─────────────────────┐
+                         │   User / Operator   │
+                         └──────────┬──────────┘
+                                    │
+                             CSV / Image Data
+                                    │
+                                    ↓
+                         ┌─────────────────────┐
+                         │   Ingestion Layer   │
+                         │  Source Detection   │
+                         └──────────┬──────────┘
+                                    │
+                                    ↓
+                         ┌─────────────────────┐
+                         │ Reconciliation Core │
+                         │ Deterministic Rules │
+                         └──────────┬──────────┘
+                                    │
+                                    ↓
+                         ┌─────────────────────┐
+                         │  ML Record Linker   │
+                         │ Confidence Scoring  │
+                         └──────────┬──────────┘
+                                    │
+                    ┌───────────────┼───────────────┐
+                    ↓               ↓               ↓
+             Risk Engine     Graph Analysis    Exception Layer
+                    │               │               │
+                    └───────────────┼───────────────┘
+                                    ↓
+                         ┌─────────────────────┐
+                         │ Finance Controller  │
+                         │    Gemini LLM       │
+                         └──────────┬──────────┘
+                                    ↓
+                         Decision-ready output
+```
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- GSAP
+- Framer Motion
+
+### Backend
+
+- Python
+- FastAPI
+- Pandas
+- scikit-learn
+- NetworkX
+
+### AI / ML
+
+- Random Forest record-linking model
+- Feature-based match scoring
+- Google Gemini API for the Finance Controller
+
+### Data
+
+- Synthetic multi-source finance records
+- Per-upload run isolation
+- CSV ingestion
+- Image-to-structured-data extraction when Gemini Vision is configured
+
+---
+
+## 📁 Project Structure
+
+```text
+Verita/
+├── backend/
+│   ├── ai/
+│   │   ├── controller.py          # Finance Controller LLM
+│   │   └── intelligence.py        # AI insights, risk & benchmark logic
+│   ├── ml/
+│   │   ├── features.py            # Matching features
+│   │   ├── model.py               # ML model
+│   │   └── record_linker.py       # Record linking
+│   ├── reconciliation/
+│   │   └── engine.py              # Core reconciliation engine
+│   ├── services/
+│   │   └── graph.py               # Relationship / impact graph
+│   ├── user_runs.py               # Per-upload datasets
+│   ├── main.py                    # FastAPI application
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── src/
+│   ├── app/
+│   │   └── page.tsx               # Main product flow
+│   └── components/
+│       ├── finance/               # Upload, results & Controller UI
+│       └── sections/              # Product presentation sections
+│
+├── public/
+├── package.json
+└── README.md
+```
+
+---
+
+## ⚡ Run Locally
 
 ### Prerequisites
-- Node.js >= 18.0.0
-- npm >= 9.0.0
 
-### Installation
+- Node.js 18+
+- Python 3.10+
+- A Gemini API key for the Finance Controller LLM
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Arfazrll/PersonalBlog.git
-   cd PersonalBlog
-   ```
+### 1. Clone
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables:**
-   Create a `.env.local` file in the root directory.
-
-   ```env
-   NEXT_PUBLIC_GITHUB_USERNAME=your_username
-   GITHUB_TOKEN=your_personal_access_token
-   WAKATIME_API_KEY=your_wakatime_key
-   GROQ_API_KEY=your_groq_key
-   GEMINI_API_KEY=your_gemini_key
-   ```
-
-4. **Initialize Development Server:**
-   ```bash
-   npm run dev
-   ```
-   Navigate to `http://localhost:3000` to interact with the application.
-
-### Production Build
-Execute the following to compile and serve the optimized application bundle:
 ```bash
-npm run build
-npm start
+git clone https://github.com/Aayushiii25/Verita.git
+cd Verita
+```
+
+### 2. Frontend dependencies
+
+```bash
+npm install
+```
+
+### 3. Backend environment
+
+Create:
+
+```text
+backend/.env
+```
+
+Use the example file as a template:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-3.7-flash
+```
+
+**Never commit `backend/.env`.** It is ignored by Git.
+
+### 4. Backend dependencies
+
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+### 5. Start FastAPI
+
+```bash
+uvicorn main:app --reload
+```
+
+The backend runs on:
+
+```text
+http://localhost:8000
+```
+
+### 6. Start Next.js
+
+In another terminal:
+
+```bash
+npm run dev
+```
+
+The frontend runs on:
+
+```text
+http://localhost:3000
 ```
 
 ---
 
-## Project Showcase Overview
+## 🔐 Environment Variables
 
-The platform currently documents **19 technical projects** spanning multiple engineering disciplines:
+| Variable | Required | Purpose |
+|---|---|---|
+| `GEMINI_API_KEY` | For LLM | Authenticates the Finance Controller with Gemini |
+| `GEMINI_MODEL` | Optional | Gemini model name; defaults to `gemini-3.7-flash` |
 
-| Discipline | Notable Projects | Core Technologies |
-|------------|------------------|-------------------|
-| **Artificial Intelligence** | DocsInsight Engine, NeuroVision, Hand Gesture Recognition | Python, TensorFlow, OpenCV, LangChain |
-| **Data Science & Analytics** | Credit Risk Analysis, MyTelkomsel Sentiment, Data Analyst Dashboard | Python, LSTM, Pandas, Plotly |
-| **Software Engineering** | Donasiaku, POLABDC SaaS, Digilibzx | Laravel, Next.js, Go, PostgreSQL, Prisma |
-| **IoT & Embedded Systems** | TerraFlow Platform, Smart Motion Detection | ESP32, Raspberry Pi, MQTT, C++ |
+Keep all secrets server-side. Do **not** expose `GEMINI_API_KEY` through a `NEXT_PUBLIC_*` variable.
 
 ---
 
-## License
+## 🔄 Core API Flow
 
-This project is licensed under the [MIT License](LICENSE).
+### Upload a dataset
 
-<div align="center">
-  <p>Engineered by Syahril Arfian Almazril</p>
-</div>
+```http
+POST /api/runs/upload
+```
+
+Creates an isolated finance run and ingests the supplied sources.
+
+### Get run summary
+
+```http
+GET /api/runs/{run_id}/summary
+```
+
+Returns reconciliation summary information for that run.
+
+### Run reconciliation
+
+```http
+GET /api/reconcile?run_id={run_id}
+```
+
+Runs the reconciliation engine against the selected dataset.
+
+### Ask the Finance Controller
+
+```http
+POST /api/controller/ask
+```
+
+Example payload:
+
+```json
+{
+  "question": "Which transactions have the highest unresolved exposure?",
+  "run_id": "your_run_id"
+}
+```
+
+The LLM receives the current dataset and reconciliation evidence as grounded context.
+
+---
+
+## 🤖 Finance Controller Guardrails
+
+The LLM is not treated as the source of truth for accounting data.
+
+Its controller prompt explicitly requires it to:
+
+1. use only supplied financial data;
+2. never invent transactions, invoices, amounts, dates, or explanations;
+3. identify missing evidence;
+4. distinguish model inference from confirmed source data;
+5. cite relevant record IDs when discussing reconciliation;
+6. avoid claiming that an external accounting action occurred unless the dataset confirms it.
+
+This makes the LLM an **operator interface over the reconciliation system**, rather than an unrestricted chatbot.
+
+---
+
+## 🧪 Example Evaluation
+
+A representative run should contain **50+ records** across the synthetic finance sources.
+
+The important evaluation output is:
+
+```text
+Records processed:       50+
+Matched:                 X
+Review required:         Y
+Unresolved exceptions:   Z
+Match rate:              XX.X%
+Financial exposure:      ₹ / $ X,XXX.XX
+```
+
+The exact values should come from the executed dataset and benchmark run — not from a hard-coded claim in this README.
+
+That distinction matters: **Verita reports the result it actually observed.**
+
+---
+
+## 🏆 Why This Fits Track 04
+
+**Track 04 asks for an AI Finance Controller that closes a finance-ops loop across a 50+ record synthetic batch.**
+
+Verita addresses that loop end-to-end:
+
+| Track requirement | Verita implementation |
+|---|---|
+| 50+ record batch | Synthetic multi-source finance dataset |
+| Finance operations | Bank / invoice / settlement / ledger reconciliation |
+| AI agent | Grounded Finance Controller LLM |
+| Matching | Deterministic baseline + ML record linking |
+| Measured performance | Match rate and benchmark reporting |
+| Exceptions | Explicit review + unresolved exception states |
+| Risk | Confidence and risk engine |
+| Impact | Financial exposure and relationship graph |
+| Decision support | LLM-powered finance Q&A |
+| Auditability | Evidence-backed decision trace |
+| Honest evaluation | No fabricated accuracy without ground truth |
+
+---
+
+## 🔮 Future Extensions
+
+The architecture can be extended toward the other directions suggested by the track:
+
+- settlement Q&A automation;
+- forward cash forecasting;
+- tax-line matching;
+- ERP integrations;
+- human-in-the-loop approval workflows;
+- continuous reconciliation monitoring;
+- production accounting-system connectors.
+
+---
+
+## 👥 Buildathon Project
+
+**Verita** was built for the **Razorpay Buildathon — Track 04: AI Finance Controller**.
+
+> **Run the books and the cash position.**
+>
+> Don't hide the exceptions. Explain them, prioritize them, and give the finance operator a decision they can act on.
