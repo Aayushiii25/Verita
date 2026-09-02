@@ -19,19 +19,19 @@ export function ConditionalNavigation({ children }: { children: React.ReactNode 
     const blogIndex = segments.indexOf('blog');
     const isBlogDetail = blogIndex !== -1 && segments.length > blogIndex + 1;
 
-    // Default to true for SSR to match the most common initial state,
-    // but only actually render the conditional logic once mounted to avoid mismatches.
     const useFullLayout = !(isProjectDetail || isBlogDetail);
+    // The Verita landing experience is intentionally chrome-free.
+    // Keep the shared navigation on the rest of the site, but remove the
+    // floating portfolio badge (clock / home / about / contact) from `/`.
+    const showNavbar = useFullLayout && pathname !== '/';
 
     if (!mounted) {
         return <>{children}</>;
     }
 
     return (
-        <div
-            className={useFullLayout ? "relative min-h-screen flex flex-col" : "contents"}
-        >
-            {useFullLayout && <Navbar />}
+        <div className={useFullLayout ? "relative min-h-screen flex flex-col" : "contents"}>
+            {showNavbar && <Navbar />}
             <div className={useFullLayout ? "flex-1 relative" : "contents"}>
                 {children}
             </div>
