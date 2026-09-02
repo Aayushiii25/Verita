@@ -1,24 +1,41 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence, useSpring, useMotionValue, useMotionTemplate } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useIsMobile } from "@/hooks/useIsMobile";
 
+import { Sparkles, Mail, ArrowRight, ArrowDown } from 'lucide-react';
 import { LoadingScreen } from '@/components/layout';
-import StatsSection from '@/components/sections/StatsSection';
-import CTASection from '@/components/sections/CTASection';
-import { HeroVisual } from '@/components/sections/HeroVisual';
-import { usePreloadState } from '@/components/ui/arc-preloader-hero';
-import { HorizontalScrollSection } from '@/components/sections/HorizontalScrollSection';
-import { DeferredMount } from '@/components/ui/DeferredMount';
-import ExpertiseSection from '@/components/sections/ExpertiseSection';
+import { TextPressure } from '@/components/ui/TextPressure';
+import { portfolioData } from '@/data/portfolio';
+import { cn } from "@/lib/utils";
 import { SocialCorner } from '@/components/layout/SocialCorner';
+import { DeferredMount } from '@/components/ui/DeferredMount';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 }
+
+const Hyperspeed = dynamic(() => import('@/components/ui/Hyperspeed'), { ssr: false });
+const { hyperspeedPresets } = require('@/components/ui/Hyperspeed');
+
+const Scene3D = dynamic(() => import('@/components/three/Scene3D').then(mod => ({ default: mod.Scene3D })), {
+    ssr: false,
+    loading: () => null
+});
+
+import AboutSection from "@/components/sections/AboutSection";
+import ExpertiseSection from "@/components/sections/ExpertiseSection";
+import { HeroVisual } from "@/components/sections/HeroVisual";
+import StatsSection from "@/components/sections/StatsSection";
+import CTASection from "@/components/sections/CTASection";
+import { usePreloadState } from "@/components/ui/arc-preloader-hero";
+import { HorizontalScrollSection } from "@/components/sections/HorizontalScrollSection";
 
 const MetricCTAHijack = () => {
     return (
@@ -28,7 +45,6 @@ const MetricCTAHijack = () => {
                 <div className="sticky top-0 z-0 overflow-hidden">
                     <StatsSection showOnly="bottom" />
                 </div>
-
                 <div className="relative z-20 bg-background dark:bg-black">
                     <div className="absolute top-0 left-0 w-full h-10 dark:shadow-[0_-50px_150px_rgba(0,0,0,0.8)] -z-10" />
                     <div className="h-[10vh]" />
@@ -52,7 +68,6 @@ export default function HomePage() {
             setSkipAnimation(true);
             setIsLoading(false);
         }
-
         if (typeof window === 'undefined' || !('ResizeObserver' in window)) return;
         const refreshLayout = () => {
             window.dispatchEvent(new Event('resize'));
@@ -72,9 +87,7 @@ export default function HomePage() {
 
     useEffect(() => {
         if (isReadyToAnimate) {
-            const timer = setTimeout(() => {
-                ScrollTrigger.refresh();
-            }, 1500);
+            const timer = setTimeout(() => { ScrollTrigger.refresh(); }, 1500);
             return () => clearTimeout(timer);
         }
     }, [isReadyToAnimate]);
@@ -86,9 +99,7 @@ export default function HomePage() {
         setTimeout(() => { ScrollTrigger.refresh(); }, 100);
     };
 
-    const handleExitStart = () => {
-        setIsInitialLoadingExit(true);
-    };
+    const handleExitStart = () => { setIsInitialLoadingExit(true); };
 
     return (
         <>
@@ -96,18 +107,14 @@ export default function HomePage() {
             <motion.main
                 initial={skipAnimation ? false : { opacity: 0, y: 40 }}
                 animate={skipAnimation ? { opacity: 1, y: 0 } : (isReadyToAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 })}
-                transition={{
-                    duration: skipAnimation ? 0 : 1.4,
-                    ease: skipAnimation ? "linear" : [0.16, 1, 0.3, 1],
-                    opacity: { duration: skipAnimation ? 0 : 0.8 }
-                }}
+                transition={{ duration: skipAnimation ? 0 : 1.4, ease: skipAnimation ? "linear" : [0.16, 1, 0.3, 1], opacity: { duration: skipAnimation ? 0 : 0.8 } }}
                 className="relative overflow-x-clip"
             >
                 <HeroVisual isReady={isReadyToAnimate} />
                 <HorizontalScrollSection isReady={isReadyToAnimate} />
-
                 <DeferredMount>
                     <ExpertiseSection />
+                    <AboutSection />
                     <MetricCTAHijack />
                     <SocialCorner className="fixed bottom-12 right-12 z-[30]" />
                 </DeferredMount>
