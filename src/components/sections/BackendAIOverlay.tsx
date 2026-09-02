@@ -55,9 +55,7 @@ export function BackendAIOverlay({ isReady = false }: { isReady?: boolean }) {
         ]);
         if (!insightsRes.ok || !benchmarkRes.ok || !impactRes.ok) return;
         const [insightData, benchmarkData, impactData] = await Promise.all([
-          insightsRes.json(),
-          benchmarkRes.json(),
-          impactRes.json(),
+          insightsRes.json(), benchmarkRes.json(), impactRes.json(),
         ]);
         if (mounted) {
           setInsights(insightData.insights || []);
@@ -65,7 +63,7 @@ export function BackendAIOverlay({ isReady = false }: { isReady?: boolean }) {
           setImpact(impactData);
         }
       } catch {
-        // Backend can be started independently; keep the existing UI usable when offline.
+        // Keep the existing frontend usable if the backend is offline.
       }
     };
 
@@ -84,8 +82,9 @@ export function BackendAIOverlay({ isReady = false }: { isReady?: boolean }) {
       const section = document.getElementById("verita-advanced-features");
       if (!section) return;
       const rect = section.getBoundingClientRect();
-      const height = Math.max(1, section.offsetHeight);
-      const progress = Math.max(0, Math.min(1, -rect.top / Math.max(1, height - window.innerHeight)));
+      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      const pinnedDistance = 6000;
+      const progress = Math.max(0, Math.min(1, (window.scrollY - sectionTop) / pinnedDistance));
       const slide = Math.min(12, 8 + Math.floor(progress * 5));
       setActiveSlide(slide);
       setVisible(rect.top <= 40 && rect.bottom >= window.innerHeight * 0.45);
