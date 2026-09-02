@@ -1,8 +1,10 @@
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from reconciliation.engine import ReconciliationEngine
 from graph.financial_graph import FinancialGraph
 from ai.intelligence import explain_match, assess_risk, build_impact, benchmark
+from ai.controller import answer_controller
 from user_runs import create_run, get_manifest, ingest_uploads, load_run_records
 import os
 import pandas as pd
@@ -18,6 +20,11 @@ app.add_middleware(
 )
 
 engine = ReconciliationEngine()
+
+
+class ControllerQuestion(BaseModel):
+    question: str
+    run_id: str | None = None
 
 
 def load_data_from_csv():
@@ -109,6 +116,16 @@ def finance_run_summary(run_id: str):
     }
 
 
+@app.post("/api/controller/ask")
+def controller_ask(payload: ControllerQuestion):
+    question = payload.question.strip()
+    if not question:
+        raise HTTPException(status_code=400, detail="Ask a finance question.")
+    bank, stl, inv, led = _run_or_404(payload.run_id)
+    matches = engine.reconcile(bank, stl, inv, led)
+    return answer_controller(question, bank, stl, inv, led, matches) | {"run_id": payload.run_id or "synthetic"}
+
+
 @app.post("/api/reconcile")
 def reconcile(run_id: str | None = None):
     bank, stl, inv, led = _run_or_404(run_id)
@@ -179,7 +196,6 @@ def ai_impact(run_id: str | None = None):
 
 @app.get("/api/ai/benchmark")
 def ai_benchmark(run_id: str | None = None):
-    # User uploads have no hidden ground-truth file, so never invent accuracy.
     if run_id:
         bank, stl, inv, led = _run_or_404(run_id)
         matches = engine.reconcile(bank, stl, inv, led)
