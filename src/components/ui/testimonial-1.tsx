@@ -1,200 +1,221 @@
 "use client";
 
-import { ArrowUp, ExternalLink } from "lucide-react";
-import { motion, AnimatePresence, useMotionValue, useTransform, animate, useInView } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import { AlertTriangle, ArrowDown, Check, ChevronRight, CircleDollarSign, GitBranch, ShieldAlert, Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 
-function Counter({ value, decimals = 0 }: { value: number; decimals?: number }) {
-  const count = useMotionValue(1);
-  const rounded = useTransform(count, (latest) => latest.toFixed(decimals));
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+type ChainRow = {
+  label: string;
+  amount: string;
+  status: "matched" | "break";
+};
 
-  useEffect(() => {
-    if (isInView) {
-      const controls = animate(count, value, { duration: 2, ease: "easeOut" });
-      return () => controls.stop();
-    }
-  }, [count, value, isInView]);
+const chain: ChainRow[] = [
+  { label: "Invoice", amount: "₹50,000", status: "matched" },
+  { label: "Payment", amount: "₹50,000", status: "matched" },
+  { label: "Gateway", amount: "₹49,250", status: "matched" },
+  { label: "Bank", amount: "₹49,250", status: "matched" },
+  { label: "GL", amount: "₹50,000", status: "break" },
+];
 
-  return <motion.span ref={ref}>{rounded}</motion.span>;
-}
+const hypotheses = [
+  { label: "Gateway fee", probability: 82, detail: "₹750 equals the expected gateway charge." },
+  { label: "Timing difference", probability: 9, detail: "Settlement timing could explain the variance." },
+  { label: "FX difference", probability: 6, detail: "Currency conversion evidence is weak." },
+  { label: "Data error", probability: 3, detail: "No strong source-record corruption found." },
+];
 
 export default function Testimonial1() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  interface StatItem {
-    value: number;
-    decimals: number;
-    suffix: string;
-    label: string;
-    href: string;
-    cta: string;
-  }
-
-  const stats: StatItem[] = [
-    {
-      value: 3.62,
-      decimals: 2,
-      suffix: "/4.0",
-      label: "Current GPA",
-      href: "/resume",
-      cta: "View Resume",
-    },
-    {
-      value: 20,
-      decimals: 0,
-      suffix: "+",
-      label: "Projects Completed",
-      href: "/projects",
-      cta: "View Projects",
-    },
-    {
-      value: 2,
-      decimals: 0,
-      suffix: " Years",
-      label: "Professional Exp",
-      href: "/experience",
-      cta: "Explore Career",
-    },
-    {
-      value: 34,
-      decimals: 0,
-      suffix: "+",
-      label: "Tech & Tools",
-      href: "/skills",
-      cta: "See Skills",
-    },
-  ];
+  const [activeHypothesis, setActiveHypothesis] = useState(0);
+  const [scanned, setScanned] = useState(false);
 
   return (
-    <div id="professional-statistics" className="bg-white dark:bg-black min-h-screen w-full grid place-content-center py-16 px-4 md:px-8 lg:px-16 relative">
-      <div className="max-w-6xl mx-auto">
-        {/* Community Badge */}
-        <div className="flex justify-center mb-6">
-          <div className="bg-[#f1efec] dark:bg-zinc-900 border border-neutral-200 dark:border-zinc-800 text-black dark:text-white px-5 py-1.5 rounded-full text-xs uppercase tracking-wider font-semibold flex items-center gap-2.5 shadow-sm">
+    <section
+      id="professional-statistics"
+      className="relative min-h-screen w-full overflow-hidden bg-black px-4 py-16 text-white md:px-8 lg:px-16"
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.08),transparent_42%)]" />
+
+      <div className="relative mx-auto max-w-6xl">
+        <div className="mb-7 flex justify-center">
+          <div className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.06] px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-300 backdrop-blur-xl">
             <span className="relative flex h-2.5 w-2.5">
               <motion.span
-                animate={{
-                  scale: [1, 2, 1],
-                  opacity: [0.6, 0, 0.6],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute inline-flex h-full w-full rounded-full bg-green-400/60"
+                animate={{ scale: [1, 1.8, 1], opacity: [0.8, 0, 0.8] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0 rounded-full bg-emerald-400"
               />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
+              <span className="relative h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(52,211,153,0.8)]" />
             </span>
-            Professional Statistics
+            Financial Intelligence
           </div>
         </div>
 
-        {/* Main Heading with Refined Block Reveal Animation */}
-        <div className="text-center max-w-5xl mx-auto relative text-neutral-900 dark:text-white px-4 space-y-1 md:space-y-2">
-          {[
-            { text: "Data that speaks. AI that reasons.", color: "#6366f1", delay: 0 },
-            { text: "Software that ships.", color: "#10b981", delay: 0.15 },
-            { text: "Three disciplines, one engineer", color: "#f59e0b", delay: 0.3 },
-            { text: "and the numbers behind the work.", color: "#ef4444", delay: 0.45 }
-          ].map((line, i) => (
-            <div key={i} className="relative block overflow-hidden py-1.5">
-              <motion.h1
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: "-20px" }}
-                transition={{
-                  delay: line.delay + 0.35,
-                  duration: 0.01
-                }}
-                className="text-3xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tighter"
-              >
-                {line.text}
-              </motion.h1>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="mx-auto max-w-5xl text-center"
+        >
+          <h1 className="text-4xl font-black leading-[0.98] tracking-[-0.055em] md:text-6xl lg:text-7xl">
+            Find the break.
+            <br />
+            <span className="text-zinc-500">Explain why it happened.</span>
+          </h1>
+          <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-zinc-400 md:text-base">
+            Verita traces every financial record through the chain, detects where the numbers diverge, then ranks evidence-backed root-cause hypotheses.
+          </p>
+        </motion.div>
 
-              {/* The Refined Revealer Block */}
-              <motion.div
-                initial={{ clipPath: i % 2 === 0 ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)" }}
-                whileInView={{
-                  clipPath: i % 2 === 0 
-                    ? ["inset(0 100% 0 0)", "inset(0 0% 0 0)", "inset(0 0% 0 0)", "inset(0 0 0 100%)"]
-                    : ["inset(0 0 0 100%)", "inset(0 0% 0 0)", "inset(0 0% 0 0)", "inset(0 100% 0 0)"]
-                }}
-                viewport={{ once: true, margin: "-20px" }}
-                transition={{
-                  duration: 0.75,
-                  times: [0, 0.45, 0.55, 1],
-                  delay: line.delay,
-                  ease: [0.85, 0, 0.15, 1]
-                }}
-                className="absolute inset-0 z-10"
-                style={{ backgroundColor: line.color }}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Glassmorphic Stats Bar */}
-        <div className="sm:flex grid grid-cols-2 gap-8 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl mt-12 w-full mx-auto px-8 py-10 border rounded-2xl border-white/20 dark:border-white/5 shadow-2xl relative overflow-hidden">
-          {/* Subtle Background Glow inside the bar */}
-          <div className="absolute top-0 left-1/4 w-1/2 h-full bg-blue-500/5 blur-[100px] pointer-events-none" />
-
-          {stats.map((stat, index) => (
-            <Link
-              key={stat.label}
-              href={stat.href}
-              className="flex-1 relative"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <div className="flex flex-col items-center justify-center relative h-full group">
-                {index !== 0 && (
-                  <div className="hidden sm:block w-0.5 h-12 border border-dashed border-neutral-200 dark:border-zinc-700 absolute -left-4" />
-                )}
-
-                <div className="flex flex-col items-center text-center transition-all duration-300 group-hover:opacity-40">
-                  <span className="text-[10px] sm:text-xs font-medium text-neutral-500 dark:text-zinc-400 uppercase tracking-wider mb-2">
-                    {stat.label}
-                  </span>
-                  <div className="text-2xl sm:text-3xl font-black text-neutral-900 dark:text-white tracking-tighter flex items-baseline">
-                    <Counter value={stat.value} decimals={stat.decimals} />
-                    <span className="text-lg sm:text-2xl ml-0.5">{stat.suffix}</span>
-                  </div>
+        <div className="mt-12 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          {/* STEP 5 */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.65, ease: "easeOut" }}
+            className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.045] p-5 backdrop-blur-xl md:p-7"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">
+                  <GitBranch className="h-3.5 w-3.5" /> STEP 05
                 </div>
-
-                {/* Smoky / Foggy Hover Reveal - Perfected Opacity */}
-                <AnimatePresence>
-                  {hoveredIndex === index && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      className="absolute inset-[-20px] flex items-center justify-center z-20 pointer-events-none"
-                    >
-                      {/* The 'Smoke' Layer - Solid Center Masking */}
-                      <div
-                        className="absolute inset-0 bg-white dark:bg-zinc-950 backdrop-blur-[50px]"
-                        style={{
-                          maskImage: 'radial-gradient(circle, black 45%, transparent 95%)',
-                          WebkitMaskImage: 'radial-gradient(circle, black 45%, transparent 95%)',
-                        }}
-                      />
-
-                      <span className="relative text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-1.5 drop-shadow-md z-30">
-                        {stat.cta}
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <h2 className="text-2xl font-black tracking-tight md:text-3xl">Break / Exception Detection</h2>
+                <p className="mt-2 text-sm text-zinc-500">Where does the financial chain break?</p>
               </div>
-            </Link>
-          ))}
+              <div className="rounded-2xl border border-amber-400/20 bg-amber-400/10 p-3 text-amber-300">
+                <ShieldAlert className="h-5 w-5" />
+              </div>
+            </div>
+
+            <div className="mt-7 rounded-2xl border border-white/8 bg-black/40 p-4 md:p-5">
+              {chain.map((row, index) => (
+                <div key={row.label}>
+                  <motion.div
+                    initial={{ opacity: 0, x: -8 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.08 }}
+                    className="flex items-center justify-between rounded-xl px-3 py-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`flex h-7 w-7 items-center justify-center rounded-full ${row.status === "break" ? "bg-amber-400/15 text-amber-300" : "bg-emerald-400/10 text-emerald-400"}`}>
+                        {row.status === "break" ? <AlertTriangle className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" />}
+                      </span>
+                      <span className="text-sm font-semibold text-zinc-300">{row.label}</span>
+                    </div>
+                    <span className={`font-mono text-sm font-bold ${row.status === "break" ? "text-amber-300" : "text-zinc-100"}`}>
+                      {row.amount}
+                    </span>
+                  </motion.div>
+                  {index < chain.length - 1 && (
+                    <div className="ml-[25px] h-4 border-l border-dashed border-white/15" />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-amber-400/20 bg-amber-400/[0.06] p-4">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-amber-300/70">Exception detected</div>
+                <div className="mt-1 text-lg font-black">₹750 discrepancy</div>
+                <div className="mt-1 text-xs text-zinc-500">Detection only — not resolved</div>
+              </div>
+              <CircleDollarSign className="h-7 w-7 text-amber-300" />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setScanned((value) => !value)}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-zinc-200 transition hover:bg-white/10"
+            >
+              {scanned ? "Scan complete · 1 break found" : "Run exception scan"}
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </motion.div>
+
+          {/* STEP 6 */}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.65, ease: "easeOut", delay: 0.08 }}
+            className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.045] p-5 backdrop-blur-xl md:p-7"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">
+                  <Sparkles className="h-3.5 w-3.5" /> STEP 06
+                </div>
+                <h2 className="text-2xl font-black tracking-tight md:text-3xl">Root-Cause Engine</h2>
+                <p className="mt-2 text-sm text-zinc-500">What most likely caused the break?</p>
+              </div>
+              <div className="rounded-2xl border border-violet-400/20 bg-violet-400/10 p-3 text-violet-300">
+                <Sparkles className="h-5 w-5" />
+              </div>
+            </div>
+
+            <div className="mt-7 space-y-3">
+              {hypotheses.map((item, index) => {
+                const active = activeHypothesis === index;
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => setActiveHypothesis(index)}
+                    className={`w-full rounded-2xl border p-4 text-left transition ${active ? "border-violet-400/30 bg-violet-400/[0.07]" : "border-white/8 bg-black/30 hover:bg-white/[0.04]"}`}
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-sm font-bold text-zinc-200">{item.label}</span>
+                      <span className={`font-mono text-sm font-black ${active ? "text-violet-300" : "text-zinc-400"}`}>{item.probability}%</span>
+                    </div>
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${item.probability}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
+                        className={`h-full rounded-full ${active ? "bg-violet-300" : "bg-zinc-600"}`}
+                      />
+                    </div>
+                    <AnimatePresence initial={false}>
+                      {active && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                          animate={{ opacity: 1, height: "auto", marginTop: 10 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          className="overflow-hidden text-xs leading-5 text-zinc-500"
+                        >
+                          <span className="text-zinc-400">Evidence:</span> {item.detail}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-violet-400/15 bg-violet-400/[0.05] p-4">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-violet-300/80">
+                <Sparkles className="h-3.5 w-3.5" /> Highest-confidence hypothesis
+              </div>
+              <div className="mt-2 flex items-end justify-between gap-4">
+                <div>
+                  <div className="text-xl font-black">{hypotheses[activeHypothesis].label}</div>
+                  <div className="mt-1 text-xs text-zinc-500">Ranked from rules + ML + graph evidence</div>
+                </div>
+                <div className="font-mono text-2xl font-black text-violet-300">{hypotheses[activeHypothesis].probability}%</div>
+              </div>
+            </div>
+
+            <div className="mt-5 flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.16em] text-zinc-600">
+              <span>Detect</span><ArrowDown className="h-3 w-3 rotate-[-90deg]" /><span>Trace</span><ArrowDown className="h-3 w-3 rotate-[-90deg]" /><span>Explain</span>
+            </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
