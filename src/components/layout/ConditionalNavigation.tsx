@@ -20,10 +20,11 @@ export function ConditionalNavigation({ children }: { children: React.ReactNode 
     const isBlogDetail = blogIndex !== -1 && segments.length > blogIndex + 1;
 
     const useFullLayout = !(isProjectDetail || isBlogDetail);
-    // The Verita landing experience is intentionally chrome-free.
-    // Keep the shared navigation on the rest of the site, but remove the
-    // floating portfolio badge (clock / home / about / contact) from `/`.
-    const showNavbar = useFullLayout && pathname !== '/';
+    // Verita's main landing flow is a focused product experience, not a portfolio page.
+    // Remove the portfolio chrome (clock, home/about/contact nav and back-to-top button)
+    // from the landing page while preserving it on the rest of the site.
+    const isVeritaLanding = pathname === '/';
+    const showChrome = useFullLayout && !isVeritaLanding;
 
     if (!mounted) {
         return <>{children}</>;
@@ -31,12 +32,12 @@ export function ConditionalNavigation({ children }: { children: React.ReactNode 
 
     return (
         <div className={useFullLayout ? "relative min-h-screen flex flex-col" : "contents"}>
-            {showNavbar && <Navbar />}
+            {showChrome && <Navbar />}
             <div className={useFullLayout ? "flex-1 relative" : "contents"}>
                 {children}
             </div>
             {useFullLayout && <Footer />}
-            {useFullLayout && <BackToTop />}
+            {showChrome && <BackToTop />}
         </div>
     );
 }
