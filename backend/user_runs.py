@@ -42,16 +42,16 @@ def _write_source(run_dir: Path, source: str, frame: pd.DataFrame) -> int:
     return len(frame)
 
 
-def _extract_image_rows(data: bytes, mime_type: str) -> Dict[str, Any]:
-    """Use Gemini Vision to turn a table screenshot into canonical finance rows."""
+def _extract_document_rows(data: bytes, mime_type: str) -> Dict[str, Any]:
+    """Use Gemini multimodal extraction for screenshots and PDF finance documents."""
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        raise RuntimeError("Screenshot ingestion needs GEMINI_API_KEY on the FastAPI server. CSV uploads do not require an AI key.")
+        raise RuntimeError("PDF/screenshot ingestion needs GEMINI_API_KEY on the FastAPI server. CSV uploads do not require an AI key.")
     try:
         from google import genai
         from google.genai import types
     except ImportError as exc:
-        raise RuntimeError("Install google-genai to enable screenshot ingestion.") from exc
+        raise RuntimeError("Install google-genai to enable PDF and screenshot ingestion.") from exc
 
     schema = {
         "type": "object",
@@ -64,15 +64,15 @@ def _extract_image_rows(data: bytes, mime_type: str) -> Dict[str, Any]:
     }
     prompt = """
 You are the ingestion layer of a finance reconciliation system.
-Read the table in this screenshot. Identify whether it is BANK, INVOICE, SETTLEMENT, or LEDGER data.
-Return every visible data row as JSON. Map columns to the canonical schema below; never invent values.
-If a field is not visible, use an empty string. Preserve IDs, dates, references and amounts exactly as shown.
+Read the supplied financial screenshot or PDF. Identify whether the data is BANK, INVOICE, SETTLEMENT, or LEDGER data.
+Return every visible data row as JSON. If a PDF contains multiple relevant pages/tables, extract all visible rows that belong to the same source.
+Map columns to the canonical schema below; never invent values. If a field is not visible, use an empty string.
+Preserve IDs, dates, references and amounts exactly as shown. Do not fabricate rows outside the supplied document.
 Canonical columns:
 BANK: transaction_id, transaction_date, value_date, description, reference_number, debit, credit, balance, counterparty_name
 INVOICE: invoice_number, invoice_date, order_reference, customer_id, customer_name, gross_amount, tax_amount, net_amount, payment_status
 SETTLEMENT: settlement_id, settlement_date, marketplace, gross_sales, commission_fee, payment_fee, refund_amount, other_adjustments, payout_amount, bank_reference
 LEDGER: journal_id, posting_date, account_name, debit, credit, currency, narration, related_reference
-Do not fabricate rows outside the visible table.
 """
     client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
@@ -102,8 +102,16 @@ def ingest_uploads(files: Iterable[Any]) -> Dict[str, Any]:
                     raise ValueError("Could not identify this CSV. Use one of the four source templates shown in the upload guide.")
                 count = _write_source(run_dir, detection.source, frame)
                 sources[detection.source] = {"source": detection.source, "files": sources.get(detection.source, {}).get("files", []) + [filename], "records": count, "confidence": detection.confidence, "method": "schema"}
+            elif suffix == ".pdf" or content_type == "application/pdf":
+                parsed = _extract_document_rows(data, "application/pdf")
+                source = parsed["source"]
+                rows = parsed.get("rows", [])
+                if not rows:
+                    raise ValueError("No finance table rows were detected in the PDF.")
+                count = _write_source(run_dir, source, pd.DataFrame(rows).fillna(""))
+                sources[source] = {"source": source, "files": sources.get(source, {}).get("files", []) + [filename], "records": count, "confidence": 1.0, "method": "gemini-document", "notes": parsed.get("notes", "")}
             elif content_type.startswith("image/") or suffix in {".png", ".jpg", ".jpeg", ".webp"}:
-                parsed = _extract_image_rows(data, content_type or "image/png")
+                parsed = _extract_document_rows(data, content_type or "image/png")
                 source = parsed["source"]
                 rows = parsed.get("rows", [])
                 if not rows:
@@ -111,7 +119,7 @@ def ingest_uploads(files: Iterable[Any]) -> Dict[str, Any]:
                 count = _write_source(run_dir, source, pd.DataFrame(rows).fillna(""))
                 sources[source] = {"source": source, "files": sources.get(source, {}).get("files", []) + [filename], "records": count, "confidence": 1.0, "method": "gemini-vision", "notes": parsed.get("notes", "")}
             else:
-                raise ValueError("Unsupported file type. Upload CSV, PNG, JPG, JPEG, or WEBP.")
+                raise ValueError("Unsupported file type. Upload CSV, PDF, PNG, JPG, JPEG, or WEBP.")
         except Exception as exc:
             errors.append({"file": filename, "error": str(exc)})
 
