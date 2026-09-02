@@ -36,6 +36,7 @@ import StatsSection from "@/components/sections/StatsSection";
 import CTASection from "@/components/sections/CTASection";
 import { usePreloadState } from "@/components/ui/arc-preloader-hero";
 import { HorizontalScrollSection } from "@/components/sections/HorizontalScrollSection";
+import { AdvancedFeaturesSection } from "@/components/sections/AdvancedFeaturesSection";
 
 const MetricCTAHijack = () => {
     return (
@@ -112,6 +113,7 @@ export default function HomePage() {
             >
                 <HeroVisual isReady={isReadyToAnimate} />
                 <HorizontalScrollSection isReady={isReadyToAnimate} />
+                <AdvancedFeaturesSection isReady={isReadyToAnimate} />
                 <DeferredMount>
                     <ExpertiseSection />
                     <AboutSection />
