@@ -3,6 +3,11 @@ from __future__ import annotations
 import os
 from typing import Any
 
+from dotenv import load_dotenv
+
+# Load backend/.env for local development. The real .env is ignored by Git.
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
+
 
 def _compact_rows(rows: list[dict[str, Any]], limit: int = 80) -> list[dict[str, Any]]:
     return rows[:limit]
@@ -13,7 +18,7 @@ def answer_controller(question: str, bank: list[dict[str, Any]], settlements: li
     if not api_key:
         return {
             "available": False,
-            "message": "Finance Controller LLM is not configured. Add GEMINI_API_KEY to the FastAPI server environment, then restart the backend.",
+            "message": "Finance Controller LLM is not configured. Add GEMINI_API_KEY to backend/.env, then restart the backend.",
         }
 
     try:
