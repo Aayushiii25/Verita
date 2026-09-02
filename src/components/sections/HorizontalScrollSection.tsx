@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Spotlight } from "@/components/ui/spotlight-new";
 import DemoRunner from "@/components/demo/DemoRunner";
 import FinancialGraph from "@/components/demo/FinancialGraph";
+import { TechnicalDetailsModal } from "@/components/demo/TechnicalDetailsModal";
 import { useLenis } from 'lenis/react';
 
 /**
@@ -129,6 +130,9 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         ref={panel1Ref}
         className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center w-full px-6 max-w-5xl mx-auto will-change-transform"
       >
+        <div className="absolute top-8 right-8 z-50">
+            <TechnicalDetailsModal />
+        </div>
         <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-6 drop-shadow-md">
           VERITA / 03
         </p>
@@ -161,6 +165,9 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         ref={panel2Ref}
         className="absolute inset-0 z-10 flex flex-col w-full px-6 pt-24 max-w-6xl mx-auto will-change-transform overflow-y-auto"
       >
+        <div className="absolute top-8 right-8 z-50">
+            <TechnicalDetailsModal />
+        </div>
         <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-2 drop-shadow-md text-center">
           VERITA / 04
         </p>
@@ -198,6 +205,9 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
         ref={panel3Ref}
         className="absolute inset-0 z-10 flex flex-col w-full px-6 pt-24 max-w-6xl mx-auto will-change-transform overflow-y-auto"
       >
+        <div className="absolute top-8 right-8 z-50">
+            <TechnicalDetailsModal />
+        </div>
         <p className="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-primary mb-2 drop-shadow-md text-center">
           VERITA / 05
         </p>
