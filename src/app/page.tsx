@@ -10,6 +10,7 @@ import { HorizontalScrollSection } from '@/components/sections/HorizontalScrollS
 import { AdvancedFeaturesSection } from '@/components/sections/AdvancedFeaturesSection';
 import { FinanceUploadMount } from '@/components/finance/FinanceUploadMount';
 import { UserRunResultsOverlay } from '@/components/finance/UserRunResultsOverlay';
+import { FinanceControllerChat } from '@/components/finance/FinanceControllerChat';
 import { VeritaFAQ } from '@/components/sections/VeritaFAQ';
 import { usePreloadState } from '@/components/ui/arc-preloader-hero';
 
@@ -47,20 +48,15 @@ export default function HomePage() {
       >
         <HeroVisual isReady={isReadyToAnimate} />
         <FinanceUploadMount />
-
-        {/* Slides 4–7: core reconciliation journey */}
         <div id="verita-early-run-range">
           <HorizontalScrollSection isReady={isReadyToAnimate} />
         </div>
         <UserRunResultsOverlay kind="early" />
-
-        {/* Slides 8–12: advanced finance-controller features */}
         <div id="verita-advanced-features">
           <AdvancedFeaturesSection isReady={isReadyToAnimate} />
         </div>
         <UserRunResultsOverlay kind="advanced" />
-
-        {/* Deliberately no portfolio/project/statistics sections after Slide 12. */}
+        <FinanceControllerChat />
         <VeritaFAQ />
       </motion.main>
     </>
