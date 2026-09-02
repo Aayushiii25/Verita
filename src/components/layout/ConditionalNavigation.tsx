@@ -20,9 +20,7 @@ export function ConditionalNavigation({ children }: { children: React.ReactNode 
     const isBlogDetail = blogIndex !== -1 && segments.length > blogIndex + 1;
 
     const useFullLayout = !(isProjectDetail || isBlogDetail);
-    // Verita's main landing flow is a focused product experience, not a portfolio page.
-    // Remove the portfolio chrome (clock, home/about/contact nav and back-to-top button)
-    // from the landing page while preserving it on the rest of the site.
+    // Verita's landing/product flow is a focused product experience, not a portfolio page.
     const isVeritaLanding = pathname === '/';
     const showChrome = useFullLayout && !isVeritaLanding;
 
@@ -36,7 +34,7 @@ export function ConditionalNavigation({ children }: { children: React.ReactNode 
             <div className={useFullLayout ? "flex-1 relative" : "contents"}>
                 {children}
             </div>
-            {useFullLayout && <Footer />}
+            {showChrome && <Footer />}
             {showChrome && <BackToTop />}
         </div>
     );
