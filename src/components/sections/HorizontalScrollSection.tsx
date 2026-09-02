@@ -5,9 +5,20 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Spotlight } from "@/components/ui/spotlight-new";
 import DemoRunner from "@/components/demo/DemoRunner";
-import FinancialGraph from "@/components/demo/FinancialGraph";
+import dynamic from "next/dynamic";
 import { TechnicalDetailsModal } from "@/components/demo/TechnicalDetailsModal";
 import { useLenis } from 'lenis/react';
+
+// Gravity UI Graph depends on browser-side rendering/SVG internals.
+// Keep it completely out of the Next.js SSR bundle for Vercel builds.
+const FinancialGraph = dynamic(() => import("@/components/demo/FinancialGraph"), {
+  ssr: false,
+  loading: () => (
+    <div className="text-sm font-mono text-gray-500 animate-pulse p-12 text-center">
+      Loading financial graph...
+    </div>
+  ),
+});
 
 /**
  * HorizontalScrollSection
