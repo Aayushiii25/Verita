@@ -8,7 +8,7 @@ import DemoRunner from "@/components/demo/DemoRunner";
 import dynamic from "next/dynamic";
 import { TechnicalDetailsModal } from "@/components/demo/TechnicalDetailsModal";
 import { useLenis } from "lenis/react";
-import { AlertTriangle, ArrowRight, Check, GitBranch, Sparkles } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, GitBranch } from "lucide-react";
 
 const FinancialGraph = dynamic(() => import("@/components/demo/FinancialGraph"), {
   ssr: false,
@@ -27,13 +27,6 @@ const chain = [
   ["GL", "₹50,000", false],
 ] as const;
 
-const hypotheses = [
-  ["Gateway fee", 82, "₹750 matches the expected gateway charge."],
-  ["Timing difference", 9, "Settlement timing may explain the variance."],
-  ["FX difference", 6, "Currency conversion evidence is weak."],
-  ["Data error", 3, "No strong source-record corruption found."],
-] as const;
-
 export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoBgRef = useRef<HTMLDivElement>(null);
@@ -44,7 +37,6 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
   const panel2Ref = useRef<HTMLDivElement>(null);
   const panel3Ref = useRef<HTMLDivElement>(null);
   const panel4Ref = useRef<HTMLDivElement>(null);
-  const panel5Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isReady) return;
@@ -55,7 +47,7 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
       const ctx = gsap.context(() => {
         if (!sectionRef.current) return;
 
-        const panels = [panel1Ref.current, panel2Ref.current, panel3Ref.current, panel4Ref.current, panel5Ref.current];
+        const panels = [panel1Ref.current, panel2Ref.current, panel3Ref.current, panel4Ref.current];
 
         gsap.set(panels, { x: "100vw", opacity: 0, zIndex: 10 });
         gsap.set(panel1Ref.current, { x: 0, opacity: 1, zIndex: 10 });
@@ -76,12 +68,11 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
           .to(videoBgRef.current, { scale: 1.25, ease: "none" }, 0)
           .to(darkOverlayRef.current, { opacity: 0.78, ease: "none" }, 0);
 
-        // Panel transitions are deliberately sequenced with a full exit before the next panel enters.
+        // Four panels only: Intro → ML Linking → Temporal Graph → Break Detection.
         const transitions = [
           [panel1Ref.current, panel2Ref.current, 0.8],
           [panel2Ref.current, panel3Ref.current, 1.8],
           [panel3Ref.current, panel4Ref.current, 2.8],
-          [panel4Ref.current, panel5Ref.current, 3.8],
         ] as const;
 
         transitions.forEach(([current, next, at]) => {
@@ -90,7 +81,7 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
             .to(next, { x: 0, opacity: 1, ease: "none", duration: 0.28 }, at + 0.02);
         });
 
-        masterTl.to(videoBgRef.current, { scale: 1.65, ease: "none", duration: 1 }, 3.8);
+        masterTl.to(videoBgRef.current, { scale: 1.65, ease: "none", duration: 1 }, 2.8);
       }, sectionRef);
 
       (sectionRef.current as any).__gsapCtx = ctx;
@@ -213,56 +204,6 @@ export function HorizontalScrollSection({ isReady = false }: { isReady?: boolean
                 <div className="mt-1 text-xl md:text-2xl font-black">₹750 discrepancy</div>
               </div>
               <div className="text-xs md:text-sm text-zinc-500">Detection only · not resolved</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* PANEL 5 — Root Cause / Causal Hypothesis */}
-      <div ref={panel5Ref} className="absolute inset-0 z-10 flex flex-col items-center justify-center w-full px-5 md:px-8 will-change-transform overflow-hidden bg-black">
-        <div className="absolute top-8 right-8 z-50"><TechnicalDetailsModal /></div>
-        <div className="w-full max-w-5xl">
-          <div className="mb-5 flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">
-            <Sparkles className="h-3.5 w-3.5" /> VERITA / 07 · CAUSAL HYPOTHESIS ENGINE
-          </div>
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.055em] leading-[0.98]">
-              Explain why it happened.
-            </h2>
-            <p className="mt-3 text-sm md:text-lg text-zinc-400">Rank possible causes using rules, ML, and graph evidence.</p>
-          </div>
-
-          <div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-white/10 bg-white/[0.045] p-5 md:p-7 backdrop-blur-xl">
-            <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-500">Detected exception</div>
-                <div className="mt-1 font-mono text-lg font-black text-amber-300">₹750 variance</div>
-              </div>
-              <div className="text-xs text-zinc-500">4 hypotheses ranked</div>
-            </div>
-            <div className="space-y-4">
-              {hypotheses.map(([label, probability, evidence], index) => (
-                <div key={label} className="group">
-                  <div className="mb-2 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <span className={`h-2 w-2 rounded-full ${index === 0 ? "bg-violet-300 shadow-[0_0_10px_rgba(196,181,253,0.8)]" : "bg-zinc-600"}`} />
-                      <span className="text-sm font-bold text-zinc-200">{label}</span>
-                    </div>
-                    <span className={`font-mono text-sm font-black ${index === 0 ? "text-violet-300" : "text-zinc-400"}`}>{probability}%</span>
-                  </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full rounded-full bg-violet-300 transition-all duration-1000" style={{ width: `${probability}%` }} />
-                  </div>
-                  <div className="mt-1.5 text-xs text-zinc-600">Evidence: {evidence}</div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 rounded-2xl border border-violet-400/20 bg-violet-400/[0.06] p-4">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-300/70">Highest-confidence hypothesis</div>
-              <div className="mt-1 flex items-center justify-between gap-4">
-                <div className="text-lg md:text-xl font-black">Gateway fee</div>
-                <div className="font-mono text-2xl font-black text-violet-300">82%</div>
-              </div>
             </div>
           </div>
         </div>
