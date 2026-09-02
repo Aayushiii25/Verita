@@ -3,22 +3,14 @@
 import { useEffect, useState } from "react";
 import { UploadFinanceDashboard } from "./UploadFinanceDashboard";
 
-/** Opens the guided upload dashboard from the existing Slide 3 Upload CTA. */
+/** Mounts the guided finance upload dashboard and opens it from Slide 3. */
 export function FinanceUploadMount() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-      const button = target?.closest("button");
-      if (!button) return;
-      if (!button.textContent?.trim().startsWith("Upload")) return;
-      event.preventDefault();
-      event.stopPropagation();
-      setOpen(true);
-    };
-    document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
+    const openDashboard = () => setOpen(true);
+    window.addEventListener("open-verita-upload", openDashboard);
+    return () => window.removeEventListener("open-verita-upload", openDashboard);
   }, []);
 
   return <UploadFinanceDashboard open={open} onClose={() => setOpen(false)} />;
