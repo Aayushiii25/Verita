@@ -471,17 +471,4 @@ Verita addresses that loop end-to-end:
 
 ---
 
-## 🔮 Future Extensions
-
-The architecture can be extended toward the other directions suggested by the track:
-
-- settlement Q&A automation;
-- forward cash forecasting;
-- tax-line matching;
-- ERP integrations;
-- human-in-the-loop approval workflows;
-- continuous reconciliation monitoring;
-- production accounting-system connectors.
-
----
 
