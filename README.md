@@ -152,6 +152,52 @@ The report surfaces:
 - confidence/risk distribution
 - benchmark information where ground truth exists
 
+### 10. Finance operations automation
+
+Verita extends the reconciliation loop into repeatable finance workflows, with automation patterns designed around controller review and operational follow-through:
+
+- **Settlement Q&A automation** — ask grounded questions over settlement activity and reconciliation evidence.
+- **Forward cash forecasting** — project near-term cash position from available financial records and reconciliation context.
+- **Tax-line matching** — align tax-related line items and surface mismatches for review.
+- **ERP integrations** — connect reconciliation workflows to enterprise resource planning systems.
+- **Human-in-the-loop approval workflows** — route sensitive or ambiguous decisions to an operator instead of forcing an automated action.
+- **Continuous reconciliation monitoring** — keep reconciliation state under ongoing review and surface newly material discrepancies.
+- **Production accounting-system connectors** — support connection patterns for real accounting-system data and downstream finance operations.
+
+These capabilities are intended to make Verita more than a one-off reconciliation demo: the controller can sit inside a broader finance workflow where automation handles routine work and humans retain control over consequential decisions.
+
+---
+
+## 🔌 Automation & Integration Layer
+
+The broader Verita roadmap connects the reconciliation core to operational finance systems:
+
+```text
+Accounting / ERP / Settlement Sources
+                │
+                ↓
+        Ingestion + Normalization
+                │
+                ↓
+       Reconciliation + Matching
+                │
+        ┌───────┴────────┐
+        ↓                ↓
+  Cash Forecasting   Tax-line Matching
+        │                │
+        └───────┬────────┘
+                ↓
+      Finance Controller Q&A
+                │
+                ↓
+     Human Approval / Action
+                │
+                ↓
+       Audit + Monitoring
+```
+
+The design principle is **automation with evidence**: routine finance operations can be accelerated, while ambiguous or high-impact decisions remain reviewable and auditable.
+
 ---
 
 ## 📊 The Benchmark Philosophy
@@ -207,6 +253,18 @@ For user-uploaded data where ground truth is unavailable, Verita explicitly avoi
                          │ Finance Controller  │
                          │    Gemini LLM       │
                          └──────────┬──────────┘
+                                    │
+                  ┌─────────────────┼──────────────────┐
+                  ↓                 ↓                  ↓
+           Settlement Q&A     Cash Forecasting    Tax-line Matching
+                  │                 │                  │
+                  └─────────────────┼──────────────────┘
+                                    ↓
+                         Human Approval Workflow
+                                    ↓
+                       ERP / Accounting Connectors
+                                    ↓
+                        Continuous Monitoring
                                     ↓
                          Decision-ready output
 ```
@@ -466,9 +524,14 @@ Verita addresses that loop end-to-end:
 | Risk | Confidence and risk engine |
 | Impact | Financial exposure and relationship graph |
 | Decision support | LLM-powered finance Q&A |
+| Settlement automation | Settlement Q&A workflow |
+| Cash management | Forward cash forecasting |
+| Tax operations | Tax-line matching |
+| Enterprise integration | ERP + production accounting-system connectors |
+| Human oversight | Human-in-the-loop approval workflows |
+| Ongoing controls | Continuous reconciliation monitoring |
 | Auditability | Evidence-backed decision trace |
 | Honest evaluation | No fabricated accuracy without ground truth |
 
 ---
-
 
