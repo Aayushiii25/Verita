@@ -507,29 +507,7 @@ That distinction matters: **Verita reports the result it actually observed.**
 
 ---
 
-## 🏆 Why This Fits Track 04
 
-**Track 04 asks for an AI Finance Controller that closes a finance-ops loop across a 50+ record synthetic batch.**
-
-Verita addresses that loop end-to-end:
-
-| Track requirement | Verita implementation |
-|---|---|
-| 50+ record batch | Synthetic multi-source finance dataset |
-| Finance operations | Bank / invoice / settlement / ledger reconciliation |
-| AI agent | Grounded Finance Controller LLM |
-| Matching | Deterministic baseline + ML record linking |
-| Measured performance | Match rate and benchmark reporting |
-| Exceptions | Explicit review + unresolved exception states |
-| Risk | Confidence and risk engine |
-| Impact | Financial exposure and relationship graph |
-| Decision support | LLM-powered finance Q&A |
-| Settlement automation | Settlement Q&A workflow |
-| Cash management | Forward cash forecasting |
-| Tax operations | Tax-line matching |
-| Enterprise integration | ERP + production accounting-system connectors |
-| Human oversight | Human-in-the-loop approval workflows |
-| Ongoing controls | Continuous reconciliation monitoring |
 | Auditability | Evidence-backed decision trace |
 | Honest evaluation | No fabricated accuracy without ground truth |
 
