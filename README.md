@@ -485,10 +485,3 @@ The architecture can be extended toward the other directions suggested by the tr
 
 ---
 
-## 👥 Buildathon Project
-
-**Verita** was built for the **Razorpay Buildathon — Track 04: AI Finance Controller**.
-
-> **Run the books and the cash position.**
->
-> Don't hide the exceptions. Explain them, prioritize them, and give the finance operator a decision they can act on.
